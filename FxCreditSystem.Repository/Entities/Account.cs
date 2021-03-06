@@ -7,7 +7,7 @@ namespace FxCreditSystem.Repository.Entities
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class Account
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public Guid ExternalId { get; set; }
         public string Description { get; set; }
         public decimal MinimumCredits { get; set; }

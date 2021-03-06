@@ -16,12 +16,30 @@ namespace FxCreditSystem.Repository
                 .HasKey(e => e.Id);
             modelBuilder
                 .Entity<Account>()
+                .HasIndex(e => e.ExternalId)
+                .IsUnique();
+            modelBuilder
+                .Entity<Account>()
                 .Property(e => e.Credits)
                 .HasConversion<double>();
+            modelBuilder
+                .Entity<Account>()
+                .Property(e => e.Description)
+                .HasMaxLength(256)
+                .IsUnicode();
+
 
             modelBuilder
                 .Entity<Transaction>()
                 .HasKey(e => e.Id);
+            modelBuilder
+                .Entity<Transaction>()
+                .HasIndex(e => new { e.AccountId, e.ExternalId })
+                .IsUnique();
+            modelBuilder
+                .Entity<Transaction>()
+                .HasIndex(e => new { e.AccountId, e.Id })
+                .IsUnique();
             modelBuilder
                 .Entity<Transaction>()
                 .Property(e => e.CreditsChange)
@@ -39,7 +57,13 @@ namespace FxCreditSystem.Repository
             modelBuilder
                 .Entity<Transaction>()
                 .HasOne(e => e.Account)
-                .WithMany(e => e.Transactions);
+                .WithMany(e => e.Transactions)
+                .HasForeignKey(e => e.AccountId);
+            modelBuilder
+                .Entity<Transaction>()
+                .HasOne(e => e.PrimaryTransaction)
+                .WithMany()
+                .HasForeignKey(e => e.PrimaryTransactionId);
         }
     }
 }

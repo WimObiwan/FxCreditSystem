@@ -19,63 +19,55 @@ namespace FxCreditSystem.Repository
 
             using (var ts = await dataContext.Database.BeginTransactionAsync())
             {
-                // try
-                // {
-                    var account = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == accountId)
-                        ?? throw new AccountNotFoundException(accountId);
-                    if (creditsChange < 0m)
-                    {
-                        VerifyAccountMinimumCredits(account, creditsChange);
-                    }
+                var account = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == accountId)
+                    ?? throw new AccountNotFoundException(accountId);
+                if (creditsChange < 0m)
+                {
+                    VerifyAccountMinimumCredits(account, creditsChange);
+                }
 
 
-                    var otherAccount = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == otherAccountId)
-                        ?? throw new AccountNotFoundException(accountId);
-                    if (creditsChange > 0m)
-                    {
-                        throw new DebetFromOtherAccountNotAllowedException(account, otherAccount);
-                        //VerifyAccountMinimumCredits(otherAccount, -creditsChange);
-                    }
+                var otherAccount = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == otherAccountId)
+                    ?? throw new AccountNotFoundException(accountId);
+                if (creditsChange > 0m)
+                {
+                    throw new DebetFromOtherAccountNotAllowedException(account, otherAccount);
+                    //VerifyAccountMinimumCredits(otherAccount, -creditsChange);
+                }
 
-                    account.Credits += creditsChange;
-                    otherAccount.Credits -= creditsChange;
+                account.Credits += creditsChange;
+                otherAccount.Credits -= creditsChange;
 
-                    account.LastChangeUtc = dateTimeUtc;
-                    otherAccount.LastChangeUtc = dateTimeUtc;
+                account.LastChangeUtc = dateTimeUtc;
+                otherAccount.LastChangeUtc = dateTimeUtc;
 
-                    Entities.Transaction transaction = new Entities.Transaction()
-                    {
-                        CreditsChange = creditsChange,
-                        CreditsNew = account.Credits,
-                        Description = description,
-                        ExternalId = transactionId,
-                        DateTimeUtc = dateTimeUtc
-                    };
+                Entities.Transaction transaction = new Entities.Transaction()
+                {
+                    Account = account,
+                    CreditsChange = creditsChange,
+                    CreditsNew = account.Credits,
+                    Description = description,
+                    ExternalId = transactionId,
+                    DateTimeUtc = dateTimeUtc
+                };
 
-                    Entities.Transaction otherTransaction = new Entities.Transaction()
-                    {
-                        CreditsChange = -creditsChange,
-                        CreditsNew = otherAccount.Credits,
-                        Description = description,
-                        ExternalId = transactionId,
-                        DateTimeUtc = dateTimeUtc
-                    };
+                Entities.Transaction otherTransaction = new Entities.Transaction()
+                {
+                    Account = otherAccount,
+                    CreditsChange = -creditsChange,
+                    CreditsNew = otherAccount.Credits,
+                    Description = description,
+                    ExternalId = transactionId,
+                    DateTimeUtc = dateTimeUtc
+                };
 
-                    //transaction.OtherTransaction = otherTransaction;
-                    transaction.Account = account;
-                    //otherTransaction.OtherTransaction = transaction;
-                    otherTransaction.Account = otherAccount;
+                otherTransaction.PrimaryTransaction = transaction;
+                
+                dataContext.AccountHistory.AddRange(transaction, otherTransaction);
 
-                    dataContext.AccountHistory.AddRange(transaction, otherTransaction);
+                await ts.CommitAsync();
 
-                    await ts.CommitAsync();
-
-                    await dataContext.SaveChangesAsync();
-                // }
-                // catch (Exception x)
-                // {
-                //     throw;
-                // }
+                await dataContext.SaveChangesAsync();
             }
         }
 

@@ -9,9 +9,9 @@ namespace FxCreditSystem.Repository.Test
     public class TransactionRepositoryTest
     {
         private readonly DbContextOptions<DataContext> dbContextOptions;
-        private int accountInternalId;
+        private long accountInternalId;
         private Guid accountId;
-        private int otherAccountInternalId;
+        private long otherAccountInternalId;
         private Guid otherAccountId;
 
         public TransactionRepositoryTest()
@@ -127,15 +127,33 @@ namespace FxCreditSystem.Repository.Test
 
                 Guid transactionId = Guid.NewGuid();
                 DateTime now = DateTime.UtcNow;
+                string description = "Test";
 
-                await transactionReposity.Add(accountId, transactionId, now, "Test", -12.23m, otherAccountId);
+                await transactionReposity.Add(accountId, transactionId, now, description, -12.23m, otherAccountId);
 
                 var account = await dbContext.Accounts.FindAsync(accountInternalId);
                 Assert.Equal(now, account.LastChangeUtc);
                 Assert.Equal(87.77m, account.Credits);
-                var transaction = await dbContext.AccountHistory.AsQueryable().Where(t => t.Account.Id == account.Id).OrderByDescending(t => t.Id).FirstAsync();
+
+                var transaction = await dbContext.AccountHistory.AsQueryable().Where(t => t.AccountId == account.Id).OrderByDescending(t => t.Id).FirstAsync();
                 Assert.Equal(-12.23m, transaction.CreditsChange);
                 Assert.Equal(87.77m, transaction.CreditsNew);
+                Assert.Equal(transactionId, transaction.ExternalId);
+                Assert.Equal(description, transaction.Description);
+                Assert.Equal(now, transaction.DateTimeUtc);
+
+                var otherAccount = await dbContext.Accounts.FindAsync(otherAccountInternalId);
+                Assert.Equal(now, otherAccount.LastChangeUtc);
+                Assert.Equal(132.23m, otherAccount.Credits);
+
+                var otherTransaction = await dbContext.AccountHistory.AsQueryable().Where(t => t.AccountId == otherAccount.Id).OrderByDescending(t => t.Id).FirstAsync();
+                Assert.Equal(12.23m, otherTransaction.CreditsChange);
+                Assert.Equal(132.23m, otherTransaction.CreditsNew);
+                Assert.Equal(transactionId, otherTransaction.ExternalId);
+                Assert.Equal(description, otherTransaction.Description);
+                Assert.Equal(now, otherTransaction.DateTimeUtc);
+                
+                Assert.Equal(transaction.Id, otherTransaction.PrimaryTransactionId);
             }
         }
     }
