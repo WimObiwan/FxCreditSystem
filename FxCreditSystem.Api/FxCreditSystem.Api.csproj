@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FxCreditSystem.Common\FxCreditSystem.Common.csproj" />
+    <ProjectReference Include="..\FxCreditSystem.Logic\FxCreditSystem.Logic.csproj" />
+    <ProjectReference Include="..\FxCreditSystem.Repository\FxCreditSystem.Repository.csproj" />
   </ItemGroup>
 
 </Project>
