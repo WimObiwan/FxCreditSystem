@@ -55,6 +55,30 @@ namespace FxCreditSystem.Repository
                 .HasMaxLength(256)
                 .IsUnicode();
 
+            // User
+            modelBuilder
+                .Entity<User>()
+                .HasKey(e => e.Id);
+            modelBuilder
+                .Entity<User>()
+                .HasIndex(e => e.AuthUserId)
+                .IsUnique();
+            modelBuilder
+                .Entity<User>()
+                .Property(e => e.AuthUserId)
+                .HasMaxLength(256) // https://stackoverflow.com/q/754547
+                .IsUnicode();
+            modelBuilder
+                .Entity<User>()
+                .Property(e => e.Description)
+                .HasMaxLength(256)
+                .IsUnicode();
+
+            // UserAccount
+            modelBuilder
+                .Entity<AccountUser>()
+                .HasKey(e => e.Id);
+
             // Relation Account-Transaction (1:n)
             modelBuilder
                 .Entity<Transaction>()
@@ -68,6 +92,22 @@ namespace FxCreditSystem.Repository
                 .HasOne(t => t.PrimaryTransaction)
                 .WithMany()
                 .HasForeignKey(t => t.PrimaryTransactionId);
+
+            // Relation Account-User (n:m)
+            modelBuilder
+                .Entity<Account>()
+                .HasMany(a => a.Users)
+                .WithMany(u => u.Accounts)
+                .UsingEntity<AccountUser>(
+                    au => au
+                        .HasOne(au => au.User)
+                        .WithMany(a => a.AccountUsers)
+                        .HasForeignKey(au => au.UserId),
+                    au => au
+                        .HasOne(au => au.Account)
+                        .WithMany(a => a.AccountUsers)
+                        .HasForeignKey(au => au.AccountId)
+                );
         }
     }
 }
