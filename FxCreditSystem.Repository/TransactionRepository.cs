@@ -11,23 +11,26 @@ namespace FxCreditSystem.Repository
     public class TransactionRepository : ITransactionRepository
     {
         private readonly DataContext dataContext;
+        private readonly AccountUserRepository accountUserRepository;
 
-        public async Task Add(Guid accountId, Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
+        public async Task Add(string authUserId, Guid accountId, Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
         {
             if (creditsChange == 0m)
                 throw new ArgumentException("Should not be 0", nameof(creditsChange)); 
 
             using (var ts = await dataContext.Database.BeginTransactionAsync())
             {
-                var account = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == accountId)
+                var account = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
                     ?? throw new AccountNotFoundException(accountId);
+
+                bool valid = await accountUserRepository.Get(account.Id, authUserId);
+                if (!valid)
+                    throw new AccountNotFoundException(account.ExternalId);
+
                 if (creditsChange < 0m)
-                {
                     VerifyAccountMinimumCredits(account, creditsChange);
-                }
 
-
-                var otherAccount = await dataContext.Accounts.FirstOrDefaultAsync(a => a.ExternalId == otherAccountId)
+                var otherAccount = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == otherAccountId)
                     ?? throw new AccountNotFoundException(accountId);
                 if (creditsChange > 0m)
                 {
@@ -78,9 +81,10 @@ namespace FxCreditSystem.Repository
                 throw new AccountCreditsInsufficientException(account, creditsNew);
         }
 
-        public TransactionRepository(DataContext dataContext)
+        public TransactionRepository(DataContext dataContext, AccountUserRepository accountUserRepository)
         {
             this.dataContext = dataContext;
+            this.accountUserRepository = accountUserRepository;
         }
     }
 }

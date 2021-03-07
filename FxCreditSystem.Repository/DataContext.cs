@@ -8,6 +8,8 @@ namespace FxCreditSystem.Repository
         public DataContext(DbContextOptions<DataContext> options) : base(options) {}
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> AccountHistory { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<AccountUser> AccountUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
