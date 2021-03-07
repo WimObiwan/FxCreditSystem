@@ -11,6 +11,7 @@ namespace FxCreditSystem.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Account
             modelBuilder
                 .Entity<Account>()
                 .HasKey(e => e.Id);
@@ -28,7 +29,7 @@ namespace FxCreditSystem.Repository
                 .HasMaxLength(256)
                 .IsUnicode();
 
-
+            // Transaction
             modelBuilder
                 .Entity<Transaction>()
                 .HasKey(e => e.Id);
@@ -54,16 +55,19 @@ namespace FxCreditSystem.Repository
                 .HasMaxLength(256)
                 .IsUnicode();
 
+            // Relation Account-Transaction (1:n)
             modelBuilder
                 .Entity<Transaction>()
-                .HasOne(e => e.Account)
-                .WithMany(e => e.Transactions)
-                .HasForeignKey(e => e.AccountId);
+                .HasOne(t => t.Account)
+                .WithMany(a => a.Transactions)
+                .HasForeignKey(t => t.AccountId);
+
+            // Relation Transaction-Transaction (1:n, but practically 1:1)
             modelBuilder
                 .Entity<Transaction>()
-                .HasOne(e => e.PrimaryTransaction)
+                .HasOne(t => t.PrimaryTransaction)
                 .WithMany()
-                .HasForeignKey(e => e.PrimaryTransactionId);
+                .HasForeignKey(t => t.PrimaryTransactionId);
         }
     }
 }
