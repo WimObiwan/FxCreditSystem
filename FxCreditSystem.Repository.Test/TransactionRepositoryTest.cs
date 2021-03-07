@@ -161,7 +161,7 @@ namespace FxCreditSystem.Repository.Test
             Assert.Equal(now, account.LastChangeUtc);
             Assert.Equal(87.77m, account.Credits);
 
-            var transaction = await dbContext.AccountHistory.Where(t => t.AccountId == account.Id).OrderByDescending(t => t.Id).FirstAsync();
+            var transaction = await dbContext.Transactions.Where(t => t.AccountId == account.Id).OrderByDescending(t => t.Id).FirstAsync();
             Assert.Equal(-12.23m, transaction.CreditsChange);
             Assert.Equal(87.77m, transaction.CreditsNew);
             Assert.Equal(transactionId, transaction.ExternalId);
@@ -172,7 +172,7 @@ namespace FxCreditSystem.Repository.Test
             Assert.Equal(now, otherAccount.LastChangeUtc);
             Assert.Equal(132.23m, otherAccount.Credits);
 
-            var otherTransaction = await dbContext.AccountHistory.Where(t => t.AccountId == otherAccount.Id).OrderByDescending(t => t.Id).FirstAsync();
+            var otherTransaction = await dbContext.Transactions.Where(t => t.AccountId == otherAccount.Id).OrderByDescending(t => t.Id).FirstAsync();
             Assert.Equal(12.23m, otherTransaction.CreditsChange);
             Assert.Equal(132.23m, otherTransaction.CreditsNew);
             Assert.Equal(transactionId, otherTransaction.ExternalId);

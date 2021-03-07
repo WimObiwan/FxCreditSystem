@@ -66,7 +66,7 @@ namespace FxCreditSystem.Repository
 
                 otherTransaction.PrimaryTransaction = transaction;
                 
-                dataContext.AccountHistory.AddRange(transaction, otherTransaction);
+                dataContext.Transactions.AddRange(transaction, otherTransaction);
 
                 await ts.CommitAsync();
 
