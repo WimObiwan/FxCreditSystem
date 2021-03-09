@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -29,8 +30,9 @@ namespace FxCreditSystem.Repository.Test
                 .Options;
 
             dbContext = new DataContext(dbContextOptions);
-            accountUserRepository = new FxCreditSystem.Repository.AccountUserRepository(dbContext);
-            transactionRepository = new FxCreditSystem.Repository.TransactionRepository(dbContext, accountUserRepository);
+            IMapper mapper = new MapperConfiguration(c => c.AddProfile<AutoMapperProfile>()).CreateMapper();
+            accountUserRepository = new FxCreditSystem.Repository.AccountUserRepository(dbContext, mapper);
+            transactionRepository = new FxCreditSystem.Repository.TransactionRepository(dbContext, accountUserRepository, mapper);
 
             Seed();
         }
@@ -89,10 +91,50 @@ namespace FxCreditSystem.Repository.Test
                 }
             );
 
+            Entities.Transaction transaction = new Entities.Transaction
+            {
+                    Account = account,
+                    ExternalId = Guid.NewGuid(),
+                    DateTimeUtc = new DateTime(2020, 1, 2, 3, 4, 5), 
+                    CreditsChange = 17.89m,
+                    CreditsNew = 100.0m,
+                    Description = "Initial",
+                    PrimaryTransaction = null,
+            };
+            Entities.Transaction otherTransaction = new Entities.Transaction
+            {
+                    Account = otherAccount,
+                    ExternalId = transaction.ExternalId,
+                    DateTimeUtc = transaction.DateTimeUtc, 
+                    CreditsChange = -transaction.CreditsChange,
+                    CreditsNew = 120.0m,
+                    Description = "Initial",
+                    PrimaryTransaction = transaction,
+            };
+
+            dbContext.AddRange(
+                transaction,
+                otherTransaction
+            );
+
             dbContext.SaveChanges();
 
             accountInternalId = account.Id;
             otherAccountInternalId = otherAccount.Id;
+        }
+
+        [Fact]
+        public async Task AddTransfer_WithInvalidArguments_ShouldFail()
+        {
+            Guid transactionId = Guid.NewGuid();
+            DateTime now = DateTime.UtcNow;
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Add(null, accountId, transactionId, now, "Test", -40.0m, otherAccountId));
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Add("", accountId, transactionId, now, "Test", -40.0m, otherAccountId));
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test", 0.0m, otherAccountId));
         }
 
         [Fact]
@@ -149,6 +191,17 @@ namespace FxCreditSystem.Repository.Test
         }
 
         [Fact]
+        public async Task AddTransfer_WithSameTransactionId_ShouldFail()
+        {
+            Guid transactionId = Guid.NewGuid();
+            DateTime now = DateTime.UtcNow;
+
+            await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test 1", -12.23m, otherAccountId);
+            await Assert.ThrowsAsync<DatabaseException>(async () => 
+                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test 2", -12.23m, otherAccountId));
+        }
+
+        [Fact]
         public async Task AddTransfer_ShouldSucceed()
         {
             Guid transactionId = Guid.NewGuid();
@@ -180,6 +233,44 @@ namespace FxCreditSystem.Repository.Test
             Assert.Equal(now, otherTransaction.DateTimeUtc);
             
             Assert.Equal(transaction.Id, otherTransaction.PrimaryTransactionId);
+        }
+
+        [Fact]
+        public async Task Get_WithInvalidArguments_ShouldFail()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Get(null, accountId));
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Get("", accountId));
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Get(authUserId, accountId, -1));
+            await Assert.ThrowsAsync<ArgumentException>(async () => 
+                await transactionRepository.Get(authUserId, accountId, -1, -1));
+        }
+
+        [Fact]
+        public async Task Get_WithUnknownAccount_ShouldFail()
+        {
+            Guid unknownAccountId = Guid.NewGuid();
+            await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
+                await transactionRepository.Get(authUserId, unknownAccountId));
+        }
+
+        [Fact]
+        public async Task Get_WithSomebodyElsesAccount_ShouldFail()
+        {
+            await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
+                await transactionRepository.Get(otherAuthUserId, accountId));
+        }
+
+        [Fact]
+        public async Task Get_ShouldSucceed()
+        {
+            var list = await transactionRepository.Get(authUserId, accountId);
+            Assert.Single(list);
+
+            list = await transactionRepository.Get(otherAuthUserId, otherAccountId);
+            Assert.Single(list);
         }
 
         protected virtual void Dispose(bool disposing)
