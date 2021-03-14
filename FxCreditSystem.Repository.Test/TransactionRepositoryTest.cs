@@ -245,7 +245,7 @@ namespace FxCreditSystem.Repository.Test
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Get(authUserId, accountId, -1));
             await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await transactionRepository.Get(authUserId, accountId, -1, -1));
+                await transactionRepository.Get(authUserId, accountId, 0, -1));
         }
 
         [Fact]
@@ -268,6 +268,10 @@ namespace FxCreditSystem.Repository.Test
         {
             var list = await transactionRepository.Get(authUserId, accountId);
             Assert.Single(list);
+            list = await transactionRepository.Get(authUserId, accountId, 0, 0);
+            Assert.Empty(list);
+            list = await transactionRepository.Get(authUserId, accountId, 1, 1);
+            Assert.Empty(list);
 
             list = await transactionRepository.Get(otherAuthUserId, otherAccountId);
             Assert.Single(list);

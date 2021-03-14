@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace FxCreditSystem.Repository.Entities
 {
-    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
+    [DebuggerDisplay("{ToString(),nq}")]
     public class Account
     {
         public long Id { get; set; }
@@ -27,11 +27,6 @@ namespace FxCreditSystem.Repository.Entities
                 str += $" ({Description})";
 
             return str;
-        }
-
-        private string GetDebuggerDisplay()
-        {
-            return ToString();
         }
     }
 }

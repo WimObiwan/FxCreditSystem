@@ -17,9 +17,6 @@ namespace FxCreditSystem.Repository
 
         internal async Task<bool> Get(long accountId, string authUserId)
         {
-            if (string.IsNullOrEmpty(authUserId))
-                throw new ArgumentException("Should not be null or empty", nameof(authUserId));
-
             var accountUser = await dataContext.AccountUsers.Where(au => au.User.AuthUserId == authUserId && au.AccountId == accountId).SingleOrDefaultAsync();
             return accountUser != null;
         }

@@ -61,13 +61,13 @@ namespace FxCreditSystem.Repository.Test
             otherAccountId = Guid.NewGuid();
             var account = new Entities.Account {
                 ExternalId = accountId,
-                Description = "Account 1",
+                Description = "Test Account 1",
                 MinimumCredits = -10.0m,
                 Credits = 100.0m,
             };
             var otherAccount = new Entities.Account {
                 ExternalId = otherAccountId,
-                Description = "Account 2",
+                Description = "Test Account 2",
                 MinimumCredits = -20.0m,
                 Credits = 120.0m,
             };
@@ -98,9 +98,6 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task Get_WithInvalidArguments_ShouldFail()
         {
-            Guid transactionId = Guid.NewGuid();
-            DateTime now = DateTime.UtcNow;
-
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await accountUserRepository.Get(null));
             await Assert.ThrowsAsync<ArgumentException>(async () => 
@@ -108,13 +105,28 @@ namespace FxCreditSystem.Repository.Test
         }
 
         [Fact]
+        public async Task Get_WithUnknownUserId_ShouldFail()
+        {
+            string unknownUserId = Guid.NewGuid().ToString();
+
+            var list = await accountUserRepository.Get(unknownUserId);
+            Assert.Empty(list);
+        }
+
+        [Fact]
         public async Task Get_ShouldSucceed()
         {
             var list = await accountUserRepository.Get(authUserId);
-            Assert.Single(list);
+            var accountUser = Assert.Single(list);
+            Assert.Equal(accountId, accountUser.AccountExternalId);
+            Assert.Contains("Test", accountUser.AccountDescription);
+            Assert.Equal(authUserId, accountUser.AuthUserId);
+            Assert.Contains("Test", accountUser.UserDescription);
 
             list = await accountUserRepository.Get(otherAuthUserId);
-            Assert.Single(list);
+            accountUser = Assert.Single(list);
+            Assert.Equal(otherAuthUserId, accountUser.AuthUserId);
+            Assert.Contains("Test", accountUser.UserDescription);
         }
 
         protected virtual void Dispose(bool disposing)

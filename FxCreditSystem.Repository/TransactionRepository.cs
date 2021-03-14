@@ -86,7 +86,7 @@ namespace FxCreditSystem.Repository
             } 
         }
 
-        public async Task<ICollection<Common.Entities.Transaction>> Get(string authUserId, Guid accountId, int limit = 0, int offset = 0)
+        public async Task<ICollection<Common.Entities.Transaction>> Get(string authUserId, Guid accountId, int limit = int.MaxValue, int offset = 0)
         {
             if (string.IsNullOrEmpty(authUserId))
                 throw new ArgumentException("Should not be null or empty", nameof(authUserId));
@@ -103,7 +103,7 @@ namespace FxCreditSystem.Repository
             var set = dataContext.Transactions.Where(t => t.Account.Id == account.Id);
             if (offset > 0)
                 set = set.Skip(offset);
-            if (limit > 0)
+            if (limit < int.MaxValue)
                 set = set.Take(limit);
 
             return await mapper.ProjectTo<Common.Entities.Transaction>(set).ToListAsync();

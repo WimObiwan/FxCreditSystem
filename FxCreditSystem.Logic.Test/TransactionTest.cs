@@ -3,7 +3,7 @@ using Xunit;
 
 namespace FxCreditSystem.Logic.Test
 {
-    public class UnitTest1
+    public class TransactionTest
     {
         [Fact]
         public void Test1()
