@@ -3,7 +3,8 @@
 
 ## Code-coverage
 
-!(https://codecov.io/github/wimobiwan/FxCreditSystem/coverage.svg?branch=master)[https://codecov.io/github/wimobiwan/FxCreditSystem?branch=master]
+[![codecov.io](https://codecov.io/github/wimobiwan/FxCreditSystem/coverage.svg?branch=master)]
+(https://codecov.io/github/wimobiwan/FxCreditSystem?branch=master)
 
 
 ``` pwsh
