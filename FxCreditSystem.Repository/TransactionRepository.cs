@@ -16,7 +16,20 @@ namespace FxCreditSystem.Repository
         private readonly AccountUserRepository accountUserRepository;
         private readonly IMapper mapper;
 
-        public async Task Add(string authUserId, Guid accountId, Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
+        public async Task Add(Common.Entities.TransactionAdd transactionAdd)
+        {
+            await Add(
+                transactionAdd.AuthUserId,
+                transactionAdd.AccountId,
+                transactionAdd.TransactionId,
+                transactionAdd.DateTimeUtc,
+                transactionAdd.Description,
+                transactionAdd.CreditsChange,
+                transactionAdd.OtherAccountId);
+        }
+
+        private async Task Add(string authUserId, Guid accountId, 
+            Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
         {
             try
             {

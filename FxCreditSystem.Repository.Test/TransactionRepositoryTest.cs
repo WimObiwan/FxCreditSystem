@@ -130,11 +130,41 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await transactionRepository.Add(null, accountId, transactionId, now, "Test", -40.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = null, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -40.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
             await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await transactionRepository.Add("", accountId, transactionId, now, "Test", -40.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = "", 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -40.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
             await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test", 0.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = 0.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -145,7 +175,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(authUserId, unknownAccountId, transactionId, now, "Test", -40.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = unknownAccountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -40.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -156,7 +196,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(otherAuthUserId, accountId, transactionId, now, "Test", -40.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = otherAuthUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -40.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -167,7 +217,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test", -40.0m, unknownAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -40.0m, 
+                        OtherAccountId = unknownAccountId
+                    }));
         }
 
         [Fact]
@@ -177,7 +237,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<AccountCreditsInsufficientException>(async () => 
-                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test", -111.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = -111.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -187,7 +257,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
 
             await Assert.ThrowsAsync<DebetFromOtherAccountNotAllowedException>(async () => 
-                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test", +1.0m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test", 
+                        CreditsChange = +1.0m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -196,9 +276,29 @@ namespace FxCreditSystem.Repository.Test
             Guid transactionId = Guid.NewGuid();
             DateTime now = DateTime.UtcNow;
 
-            await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test 1", -12.23m, otherAccountId);
+            await transactionRepository.Add(
+                new Common.Entities.TransactionAdd
+                {
+                    AuthUserId = authUserId, 
+                    AccountId = accountId, 
+                    TransactionId = transactionId, 
+                    DateTimeUtc = now, 
+                    Description = "Test 1", 
+                    CreditsChange = -12.23m, 
+                    OtherAccountId = otherAccountId
+                });
             await Assert.ThrowsAsync<DatabaseException>(async () => 
-                await transactionRepository.Add(authUserId, accountId, transactionId, now, "Test 2", -12.23m, otherAccountId));
+                await transactionRepository.Add(
+                    new Common.Entities.TransactionAdd
+                    {
+                        AuthUserId = authUserId, 
+                        AccountId = accountId, 
+                        TransactionId = transactionId, 
+                        DateTimeUtc = now, 
+                        Description = "Test 2", 
+                        CreditsChange = -12.23m, 
+                        OtherAccountId = otherAccountId
+                    }));
         }
 
         [Fact]
@@ -208,7 +308,17 @@ namespace FxCreditSystem.Repository.Test
             DateTime now = DateTime.UtcNow;
             string description = "Test";
 
-            await transactionRepository.Add(authUserId, accountId, transactionId, now, description, -12.23m, otherAccountId);
+            await transactionRepository.Add(
+                new Common.Entities.TransactionAdd
+                {
+                    AuthUserId = authUserId, 
+                    AccountId = accountId, 
+                    TransactionId = transactionId, 
+                    DateTimeUtc = now, 
+                    Description = description, 
+                    CreditsChange = -12.23m, 
+                    OtherAccountId = otherAccountId
+                });
 
             var account = await dbContext.Accounts.FindAsync(accountInternalId);
             Assert.Equal(now, account.LastChangeUtc);

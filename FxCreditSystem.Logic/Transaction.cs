@@ -8,9 +8,9 @@ namespace FxCreditSystem.Logic
     {
         private readonly ITransactionRepository transactionRepository;
         
-        public async Task Add(string authUserId, Guid accountId, Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
+        public async Task Add(FxCreditSystem.Common.Entities.TransactionAdd transactionAdd)
         {
-            await this.transactionRepository.Add(authUserId, accountId, transactionId, dateTimeUtc, description, creditsChange, otherAccountId);
+            await transactionRepository.Add(transactionAdd);
         }
 
         public Transaction(ITransactionRepository transactionRepository) 
