@@ -7,34 +7,20 @@ using Xunit;
 
 namespace FxCreditSystem.Repository.Test
 {
-    public class TransactionRepositoryTest : IDisposable
+    public class TransactionRepositoryTest : Shared.TestBase
     {
-        private readonly DbContextOptions<DataContext> dbContextOptions;
-        private readonly Shared.DatabaseSeeder databaseSeeder;
-
         private string AuthUserId => databaseSeeder.AuthUserId;
         private string OtherAuthUserId => databaseSeeder.OtherAuthUserId;
         private Entities.Account Account => databaseSeeder.Account;
         private Entities.Account OtherAccount => databaseSeeder.OtherAccount;
 
-        private bool disposedValue;
-        private readonly DataContext dbContext;
         private readonly FxCreditSystem.Repository.AccountUserRepository accountUserRepository;
         private readonly FxCreditSystem.Repository.TransactionRepository transactionRepository;
 
-        public TransactionRepositoryTest()
+        public TransactionRepositoryTest() : base(nameof(TransactionRepositoryTest))
         {
-            dbContextOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseSqlite("Filename=FxCreditSystem.Repository.Test.db")
-                .Options;
-
-            dbContext = new DataContext(dbContextOptions);
-            IMapper mapper = new MapperConfiguration(c => c.AddProfile<AutoMapperProfile>()).CreateMapper();
             accountUserRepository = new FxCreditSystem.Repository.AccountUserRepository(dbContext, mapper);
             transactionRepository = new FxCreditSystem.Repository.TransactionRepository(dbContext, accountUserRepository, mapper);
-
-            databaseSeeder = new Shared.DatabaseSeeder(dbContext);
-            databaseSeeder.Seed();
         }
 
         [Fact]
@@ -245,31 +231,6 @@ namespace FxCreditSystem.Repository.Test
 
             list = await transactionRepository.Get(OtherAuthUserId, OtherAccount.ExternalId);
             Assert.Single(list);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                    dbContext.Dispose();
-
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~TransactionRepositoryTest()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

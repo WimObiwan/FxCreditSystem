@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FxCreditSystem.Repository.Test.Shared
 {
-    internal class DatabaseSeeder
+    public class DatabaseSeeder
     {
         private readonly DataContext dbContext;
 
