@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +9,12 @@ namespace FxCreditSystem.Repository.Test
     public class AccountUserRepositoryTest : IDisposable
     {
         private readonly DbContextOptions<DataContext> dbContextOptions;
+        private readonly Shared.DatabaseSeeder databaseSeeder;
 
-        private string authUserId;
-        private string otherAuthUserId;
-        private long accountInternalId;
-        private Guid accountId;
-        private long otherAccountInternalId;
-        private Guid otherAccountId;
+        private string AuthUserId => databaseSeeder.AuthUserId;
+        private string OtherAuthUserId => databaseSeeder.OtherAuthUserId;
+        private Entities.Account Account => databaseSeeder.Account;
+        private Entities.Account OtherAccount => databaseSeeder.OtherAccount;
 
         private bool disposedValue;
         private readonly DataContext dbContext;
@@ -32,67 +30,8 @@ namespace FxCreditSystem.Repository.Test
             IMapper mapper = new MapperConfiguration(c => c.AddProfile<AutoMapperProfile>()).CreateMapper();
             accountUserRepository = new FxCreditSystem.Repository.AccountUserRepository(dbContext, mapper);
 
-            Seed();
-        }
-
-        private void Seed()
-        {
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
-
-            authUserId = $"Test|{Guid.NewGuid().ToString()}";
-            otherAuthUserId = $"Test|{Guid.NewGuid().ToString()}";
-            var user = new Entities.User()
-            {
-                AuthUserId = authUserId,
-                Description = "Test",                        
-            };
-            var otherUser = new Entities.User()
-            {
-                AuthUserId = otherAuthUserId,
-                Description = "Test Other",                        
-            };
-            dbContext.Users.AddRange(
-                user,
-                otherUser
-            );
-
-            accountId = Guid.NewGuid();
-            otherAccountId = Guid.NewGuid();
-            var account = new Entities.Account {
-                ExternalId = accountId,
-                Description = "Test Account 1",
-                MinimumCredits = -10.0m,
-                Credits = 100.0m,
-            };
-            var otherAccount = new Entities.Account {
-                ExternalId = otherAccountId,
-                Description = "Test Account 2",
-                MinimumCredits = -20.0m,
-                Credits = 120.0m,
-            };
-            dbContext.Accounts.AddRange(
-                account,
-                otherAccount
-            );
-
-            dbContext.AccountUsers.AddRange(
-                new Entities.AccountUser
-                {
-                    Account = account,
-                    User = user,
-                },
-                new Entities.AccountUser
-                {
-                    Account = otherAccount,
-                    User = otherUser,
-                }
-            );
-
-            dbContext.SaveChanges();
-
-            accountInternalId = account.Id;
-            otherAccountInternalId = otherAccount.Id;
+            databaseSeeder = new Shared.DatabaseSeeder(dbContext);
+            databaseSeeder.Seed();
         }
 
         [Fact]
@@ -116,17 +55,17 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task Get_ShouldSucceed()
         {
-            var list = await accountUserRepository.Get(authUserId);
+            var list = await accountUserRepository.Get(AuthUserId);
             var accountUser = Assert.Single(list);
-            Assert.Equal(accountId, accountUser.AccountExternalId);
-            Assert.Contains("Test", accountUser.AccountDescription);
-            Assert.Equal(authUserId, accountUser.AuthUserId);
-            Assert.Contains("Test", accountUser.UserDescription);
+            Assert.Equal(Account.ExternalId, accountUser.AccountExternalId);
+            Assert.Equal(Account.Description, accountUser.AccountDescription);
+            Assert.Equal(AuthUserId, accountUser.AuthUserId);
 
-            list = await accountUserRepository.Get(otherAuthUserId);
+            list = await accountUserRepository.Get(OtherAuthUserId);
             accountUser = Assert.Single(list);
-            Assert.Equal(otherAuthUserId, accountUser.AuthUserId);
-            Assert.Contains("Test", accountUser.UserDescription);
+            Assert.Equal(OtherAccount.ExternalId, accountUser.AccountExternalId);
+            Assert.Equal(OtherAccount.Description, accountUser.AccountDescription);
+            Assert.Equal(OtherAuthUserId, accountUser.AuthUserId);
         }
 
         protected virtual void Dispose(bool disposing)

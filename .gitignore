@@ -1,7 +1,5 @@
 bin/
 obj/
 .vscode/
-coverage.json
-coverage.cobertura.xml
-coverage.opencover.xml
-
+CoverageResults/
+TestResults/
