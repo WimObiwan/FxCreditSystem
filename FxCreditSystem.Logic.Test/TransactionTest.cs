@@ -10,11 +10,11 @@ namespace FxCreditSystem.Logic.Test
     {
 
         [Fact]
-        public async Task Test1()
+        public async Task Add_ShouldSucceed()
         {
             var transactionAddFaker = new Common.Fakers.TransactionAddFaker();
             var transactionAdd = transactionAddFaker.Generate();
-            
+
             var mockTransactionRepository = new Mock<ITransactionRepository>();
 
             Transaction transaction = new Transaction(mockTransactionRepository.Object);

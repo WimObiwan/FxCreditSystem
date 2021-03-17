@@ -36,7 +36,7 @@ namespace FxCreditSystem.Repository
                 if (string.IsNullOrEmpty(authUserId))
                     throw new ArgumentException("Should not be null or empty", nameof(authUserId));
                 if (creditsChange == 0m)
-                    throw new ArgumentException("Should not be 0", nameof(creditsChange)); 
+                    throw new ArgumentException("Should not be 0", nameof(creditsChange));
 
                 using (var ts = await dataContext.Database.BeginTransactionAsync())
                 {
@@ -46,6 +46,9 @@ namespace FxCreditSystem.Repository
                     bool valid = await accountUserRepository.Get(account.Id, authUserId);
                     if (!valid)
                         throw new AccountNotFoundException(account.ExternalId);
+                    
+                    if (accountId.Equals(otherAccountId))
+                        throw new TransactionBetweenSameAccountsException(account);
 
                     if (creditsChange < 0m)
                         VerifyAccountMinimumCredits(account, creditsChange);
