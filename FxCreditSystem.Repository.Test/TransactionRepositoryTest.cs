@@ -213,7 +213,9 @@ namespace FxCreditSystem.Repository.Test
                 .RuleFor(ta => ta.OtherAccountId, otherAccount.ExternalId);
 
             var transaction1 = transactionAddFaker.Generate();
-            var transaction2 = transactionAddFaker.RuleFor(ta => ta.TransactionId, transaction1.TransactionId).Generate();
+            var transaction2 = transactionAddFaker
+                .RuleFor(ta => ta.TransactionId, transaction1.TransactionId)
+                .Generate();
 
             await transactionRepository.Add(transaction1);
             await Assert.ThrowsAsync<DatabaseException>(async () => 
@@ -229,14 +231,16 @@ namespace FxCreditSystem.Repository.Test
                 .RuleFor(ta => ta.OtherAccountId, otherAccount.ExternalId);
 
             var transactionAdd = transactionAddFaker.Generate();
-
             await transactionRepository.Add(transactionAdd);
 
             var account2 = await dbContext.Accounts.FindAsync(account.Id);
             Assert.Equal(transactionAdd.DateTimeUtc, account2.LastChangeUtc);
             Assert.Equal(account.Credits + transactionAdd.CreditsChange, account2.Credits, 10);
 
-            var transaction = await dbContext.Transactions.Where(t => t.AccountId == account2.Id).OrderByDescending(t => t.Id).FirstAsync();
+            var transaction = await dbContext.Transactions
+                .Where(t => t.AccountId == account2.Id)
+                .OrderByDescending(t => t.Id)
+                .FirstAsync();
             Assert.Equal(transactionAdd.CreditsChange, transaction.CreditsChange, 10);
             Assert.Equal(account.Credits + transactionAdd.CreditsChange, transaction.CreditsNew, 10);
             Assert.Equal(transactionAdd.TransactionId, transaction.ExternalId);
@@ -247,7 +251,10 @@ namespace FxCreditSystem.Repository.Test
             Assert.Equal(transactionAdd.DateTimeUtc, otherAccount2.LastChangeUtc);
             Assert.Equal(otherAccount.Credits - transactionAdd.CreditsChange, otherAccount2.Credits, 10);
 
-            var otherTransaction = await dbContext.Transactions.Where(t => t.AccountId == otherAccount2.Id).OrderByDescending(t => t.Id).FirstAsync();
+            var otherTransaction = await dbContext.Transactions
+                .Where(t => t.AccountId == otherAccount2.Id)
+                .OrderByDescending(t => t.Id)
+                .FirstAsync();
             Assert.Equal(-transactionAdd.CreditsChange, otherTransaction.CreditsChange, 10);
             Assert.Equal(otherAccount.Credits - transactionAdd.CreditsChange, otherTransaction.CreditsNew, 10);
             Assert.Equal(transactionAdd.TransactionId, otherTransaction.ExternalId);
@@ -304,9 +311,7 @@ namespace FxCreditSystem.Repository.Test
             if (!disposedValue)
             {
                 if (disposing)
-                {
                     dbContext.Dispose();
-                }
 
                 disposedValue = true;
             }

@@ -7,7 +7,7 @@
 
 
 ``` pwsh
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=coberdotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=coberturatura
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./CoverageResults/
 reportgenerator "-reports:./FxCreditSystem.Repository.Test/coverage.cobertura.xml" "-targetdir:/tmp/report/"
 firefox /tmp/report/index.htm
 ```

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FxCreditSystem.Repository
 {
-    public class AccountUserRepository
+    public class AccountUserRepository : IAccountUserRepository
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
@@ -21,7 +21,7 @@ namespace FxCreditSystem.Repository
             return accountUser != null;
         }
 
-        public async Task<List<Common.Entities.AccountUser>> Get(string authUserId)
+        public async Task<IList<Common.Entities.AccountUser>> Get(string authUserId)
         {
             if (string.IsNullOrEmpty(authUserId))
                 throw new ArgumentException("Should not be null or empty", nameof(authUserId));
