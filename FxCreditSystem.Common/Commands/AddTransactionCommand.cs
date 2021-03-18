@@ -1,6 +1,6 @@
 using System;
 
-namespace FxCreditSystem.Common.Entities
+namespace FxCreditSystem.Common.Commands
 {
     public class AddTransactionCommand
     {

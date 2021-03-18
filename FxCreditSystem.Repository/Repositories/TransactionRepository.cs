@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using AutoMapper;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Commands;
 using FxCreditSystem.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +16,7 @@ namespace FxCreditSystem.Repository
         private readonly AccountUserRepository accountUserRepository;
         private readonly IMapper mapper;
 
-        public async Task Add(Common.Entities.AddTransactionCommand transactionAdd)
+        public async Task Add(AddTransactionCommand transactionAdd)
         {
             await Add(
                 transactionAdd.AuthUserId,

@@ -1,8 +1,9 @@
 using Bogus;
+using FxCreditSystem.Common.Commands;
 
 namespace FxCreditSystem.Common.Fakers
 {
-    public class AddTransactionCommandFaker : Faker<Common.Entities.AddTransactionCommand>
+    public class AddTransactionCommandFaker : Faker<AddTransactionCommand>
     {
         public AddTransactionCommandFaker()
         {

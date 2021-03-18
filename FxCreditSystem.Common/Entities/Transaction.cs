@@ -4,7 +4,7 @@ namespace FxCreditSystem.Common.Entities
 {
     public class Transaction
     {
-        public Guid ExternalId { get; set; }
+        public Guid Id { get; set; }
         public DateTime DateTimeUtc { get; set; }
         public decimal CreditsChange { get; set; }
         public decimal CreditsNew { get; set; }

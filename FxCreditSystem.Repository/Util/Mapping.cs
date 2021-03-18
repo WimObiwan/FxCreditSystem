@@ -6,9 +6,10 @@ namespace FxCreditSystem.Repository
     {
         public AutoMapperProfile()
         {
-            CreateMap<Entities.Transaction, Common.Entities.Transaction>();
+            CreateMap<Entities.Transaction, Common.Entities.Transaction>()
+                .ForMember(t => t.Id, o => o.MapFrom(t => t.ExternalId));
             CreateMap<Entities.AccountUser, Common.Entities.AccountUser>()
-                .ForMember(au => au.AccountExternalId, o => o.MapFrom(au => au.Account.ExternalId))
+                .ForMember(au => au.AccountId, o => o.MapFrom(au => au.Account.ExternalId))
                 .ForMember(au => au.AccountDescription, o => o.MapFrom(au => au.Account.Description))
                 .ForMember(au => au.AuthUserId, o => o.MapFrom(au => au.User.AuthUserId))
                 .ForMember(au => au.UserDescription, o => o.MapFrom(au => au.User.Description));

@@ -43,13 +43,13 @@ namespace FxCreditSystem.Repository.Test
         {
             var list = await accountUserRepository.Get(AuthUserId);
             var accountUser = Assert.Single(list);
-            Assert.Equal(Account.ExternalId, accountUser.AccountExternalId);
+            Assert.Equal(Account.ExternalId, accountUser.AccountId);
             Assert.Equal(Account.Description, accountUser.AccountDescription);
             Assert.Equal(AuthUserId, accountUser.AuthUserId);
 
             list = await accountUserRepository.Get(OtherAuthUserId);
             accountUser = Assert.Single(list);
-            Assert.Equal(OtherAccount.ExternalId, accountUser.AccountExternalId);
+            Assert.Equal(OtherAccount.ExternalId, accountUser.AccountId);
             Assert.Equal(OtherAccount.Description, accountUser.AccountDescription);
             Assert.Equal(OtherAuthUserId, accountUser.AuthUserId);
         }
