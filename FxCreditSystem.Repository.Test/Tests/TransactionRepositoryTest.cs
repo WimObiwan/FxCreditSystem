@@ -27,19 +27,20 @@ namespace FxCreditSystem.Repository.Test
         public async Task AddTransfer_WithInvalidArguments_ShouldFail()
         {
             var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
-
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
                     transactionAddFaker
                         .RuleFor(ta => ta.AuthUserId, (string)null)
                         .Generate()));
 
+            transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
                     transactionAddFaker
                         .RuleFor(ta => ta.AuthUserId, "")
                         .Generate()));
 
+            transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
                     transactionAddFaker

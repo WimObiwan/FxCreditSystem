@@ -16,28 +16,28 @@ namespace FxCreditSystem.Repository
         private readonly AccountUserRepository accountUserRepository;
         private readonly IMapper mapper;
 
-        public async Task Add(AddTransactionCommand transactionAdd)
+        public async Task Add(AddTransactionCommand addTransactionCommand)
         {
             await Add(
-                transactionAdd.AuthUserId,
-                transactionAdd.AccountId,
-                transactionAdd.TransactionId,
-                transactionAdd.DateTimeUtc,
-                transactionAdd.Description,
-                transactionAdd.CreditsChange,
-                transactionAdd.OtherAccountId);
+                addTransactionCommand.AuthUserId,
+                addTransactionCommand.AccountId,
+                addTransactionCommand.TransactionId,
+                addTransactionCommand.DateTimeUtc,
+                addTransactionCommand.Description,
+                addTransactionCommand.CreditsChange,
+                addTransactionCommand.OtherAccountId);
         }
 
         private async Task Add(string authUserId, Guid accountId, 
             Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
         {
+            if (string.IsNullOrEmpty(authUserId))
+                throw new ArgumentException("Should not be null or empty", nameof(authUserId));
+            if (creditsChange == 0m)
+                throw new ArgumentException("Should not be 0", nameof(creditsChange));
+
             try
             {
-                if (string.IsNullOrEmpty(authUserId))
-                    throw new ArgumentException("Should not be null or empty", nameof(authUserId));
-                if (creditsChange == 0m)
-                    throw new ArgumentException("Should not be 0", nameof(creditsChange));
-
                 using (var ts = await dataContext.Database.BeginTransactionAsync())
                 {
                     var account = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
