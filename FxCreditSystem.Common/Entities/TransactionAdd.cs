@@ -2,7 +2,7 @@ using System;
 
 namespace FxCreditSystem.Common.Entities
 {
-    public class TransactionAdd
+    public class AddTransactionCommand
     {
         public string AuthUserId { get; set; }
         public Guid AccountId { get; set; }

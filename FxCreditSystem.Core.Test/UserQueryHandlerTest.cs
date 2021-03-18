@@ -4,9 +4,9 @@ using FxCreditSystem.Common;
 using Moq;
 using Xunit;
 
-namespace FxCreditSystem.Logic.Test
+namespace FxCreditSystem.Core.Test
 {
-    public class UserTest
+    public class UserQueryHandlerTest
     {
 
         [Fact]
@@ -23,8 +23,8 @@ namespace FxCreditSystem.Logic.Test
             var mockAccountUserRepository = new Mock<IAccountUserRepository>();
             mockAccountUserRepository.Setup(au => au.Get(master.AuthUserId)).ReturnsAsync(originalAccountUserList);
 
-            var user = new User(mockAccountUserRepository.Object);
-            var accountUserList = await user.GetAccountsForUser(master.AuthUserId);
+            var userQueryHandler = new UserQueryHandler(mockAccountUserRepository.Object);
+            var accountUserList = await userQueryHandler.GetAccountsForUser(master.AuthUserId);
 
             originalAccountUserList.ShouldDeepEqual(accountUserList);
 

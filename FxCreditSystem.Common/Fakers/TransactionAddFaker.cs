@@ -2,9 +2,9 @@ using Bogus;
 
 namespace FxCreditSystem.Common.Fakers
 {
-    public class TransactionAddFaker : Faker<Common.Entities.TransactionAdd>
+    public class AddTransactionCommandFaker : Faker<Common.Entities.AddTransactionCommand>
     {
-        public TransactionAddFaker()
+        public AddTransactionCommandFaker()
         {
             StrictMode(true);
             RuleFor(ta => ta.AuthUserId, f => f.Random.Hexadecimal(16));

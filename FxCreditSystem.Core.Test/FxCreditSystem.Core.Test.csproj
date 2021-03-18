@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FxCreditSystem.Logic\FxCreditSystem.Logic.csproj" />
+    <ProjectReference Include="..\FxCreditSystem.Core\FxCreditSystem.Core.csproj" />
   </ItemGroup>
 
 </Project>

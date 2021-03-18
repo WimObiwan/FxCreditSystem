@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FxCreditSystem.Common;
 
-namespace FxCreditSystem.Logic
+namespace FxCreditSystem.Core
 {
-    public class User
+    public class UserQueryHandler
     {
         private readonly IAccountUserRepository accountUserRepository;
         
@@ -14,7 +13,7 @@ namespace FxCreditSystem.Logic
             return await accountUserRepository.Get(authUserId);
         }
 
-        public User(IAccountUserRepository accountUserRepository) 
+        public UserQueryHandler(IAccountUserRepository accountUserRepository) 
         {
             this.accountUserRepository = accountUserRepository;
         }

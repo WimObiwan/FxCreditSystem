@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FxCreditSystem.Common\FxCreditSystem.Common.csproj" />
-    <ProjectReference Include="..\FxCreditSystem.Logic\FxCreditSystem.Logic.csproj" />
+    <ProjectReference Include="..\FxCreditSystem.Core\FxCreditSystem.Core.csproj" />
     <ProjectReference Include="..\FxCreditSystem.Repository\FxCreditSystem.Repository.csproj" />
   </ItemGroup>
 

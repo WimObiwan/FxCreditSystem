@@ -26,7 +26,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_WithInvalidArguments_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker();
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
 
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
@@ -50,7 +50,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_BetweenSameAccounts_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, Account.ExternalId);
@@ -64,7 +64,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_FromUnknownAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
 
@@ -77,7 +77,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_SomebodyElsesAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, OtherAuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
@@ -91,7 +91,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_ToUnknownAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId);
 
@@ -104,7 +104,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_BelowMinimumCredits_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
@@ -119,7 +119,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_TakingCreditsFromOtherAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
@@ -134,7 +134,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_WithSameTransactionId_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
@@ -152,7 +152,7 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_ShouldSucceed()
         {
-            var transactionAddFaker = new Common.Fakers.TransactionAddFaker()
+            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);

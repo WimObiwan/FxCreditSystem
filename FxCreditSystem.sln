@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Api", "FxCre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Api.Test", "FxCreditSystem.Api.Test\FxCreditSystem.Api.Test.csproj", "{2D41491A-9C21-4742-968F-697D375AB70B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Logic", "FxCreditSystem.Logic\FxCreditSystem.Logic.csproj", "{FA8BC1BA-31B4-4BD5-B5F4-5C5977DD5BD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Core", "FxCreditSystem.Core\FxCreditSystem.Core.csproj", "{FA8BC1BA-31B4-4BD5-B5F4-5C5977DD5BD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Logic.Test", "FxCreditSystem.Logic.Test\FxCreditSystem.Logic.Test.csproj", "{A2E14CC7-E149-46CD-8002-25906EF4155F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Core.Test", "FxCreditSystem.Core.Test\FxCreditSystem.Core.Test.csproj", "{A2E14CC7-E149-46CD-8002-25906EF4155F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Repository", "FxCreditSystem.Repository\FxCreditSystem.Repository.csproj", "{26BE5D6B-6468-43FD-81ED-98A0E4FD3914}"
 EndProject
