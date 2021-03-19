@@ -26,24 +26,24 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_WithInvalidArguments_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker();
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
-                    transactionAddFaker
+                    addTransactionCommandFaker
                         .RuleFor(ta => ta.AuthUserId, (string)null)
                         .Generate()));
 
-            transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
+            addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker();
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
-                    transactionAddFaker
+                    addTransactionCommandFaker
                         .RuleFor(ta => ta.AuthUserId, "")
                         .Generate()));
 
-            transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker();
+            addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker();
             await Assert.ThrowsAsync<ArgumentException>(async () => 
                 await transactionRepository.Add(
-                    transactionAddFaker
+                    addTransactionCommandFaker
                         .RuleFor(ta => ta.CreditsChange, 0m)
                         .Generate()));
         }
@@ -51,97 +51,97 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_BetweenSameAccounts_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, Account.ExternalId);
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<TransactionBetweenSameAccountsException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_FromUnknownAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_SomebodyElsesAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, OtherAuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_ToUnknownAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId);
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_BelowMinimumCredits_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
                 .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(-Account.Credits - 10.0m - 0.01m, -Account.Credits - 10.0m - 50m));
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<AccountCreditsInsufficientException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_TakingCreditsFromOtherAccount_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
                 .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(+1m, +50m));
 
-            var transactionAdd = transactionAddFaker.Generate();
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
 
             await Assert.ThrowsAsync<DebetFromOtherAccountNotAllowedException>(async () => 
-                await transactionRepository.Add(transactionAdd));
+                await transactionRepository.Add(addTransactionCommand));
         }
 
         [Fact]
         public async Task AddTransfer_WithSameTransactionId_ShouldFail()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
 
-            var transaction1 = transactionAddFaker.Generate();
-            var transaction2 = transactionAddFaker
+            var transaction1 = addTransactionCommandFaker.Generate();
+            var transaction2 = addTransactionCommandFaker
                 .RuleFor(ta => ta.TransactionId, transaction1.TransactionId)
                 .Generate();
 
@@ -153,41 +153,41 @@ namespace FxCreditSystem.Repository.Test
         [Fact]
         public async Task AddTransfer_ShouldSucceed()
         {
-            var transactionAddFaker = new Common.Fakers.AddTransactionCommandFaker()
+            var addTransactionCommandFaker = new Common.Fakers.AddTransactionCommandFaker()
                 .RuleFor(ta => ta.AuthUserId, AuthUserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId);
 
-            var transactionAdd = transactionAddFaker.Generate();
-            await transactionRepository.Add(transactionAdd);
+            var addTransactionCommand = addTransactionCommandFaker.Generate();
+            await transactionRepository.Add(addTransactionCommand);
 
             var account2 = await dbContext.Accounts.FindAsync(Account.Id);
-            Assert.Equal(transactionAdd.DateTimeUtc, account2.LastChangeUtc);
-            Assert.Equal(Account.Credits + transactionAdd.CreditsChange, account2.Credits, 10);
+            Assert.Equal(addTransactionCommand.DateTimeUtc, account2.LastChangeUtc);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, account2.Credits, 10);
 
             var transaction = await dbContext.Transactions
                 .Where(t => t.AccountId == account2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(transactionAdd.CreditsChange, transaction.CreditsChange, 10);
-            Assert.Equal(Account.Credits + transactionAdd.CreditsChange, transaction.CreditsNew, 10);
-            Assert.Equal(transactionAdd.TransactionId, transaction.ExternalId);
-            Assert.Equal(transactionAdd.Description, transaction.Description);
-            Assert.Equal(transactionAdd.DateTimeUtc, transaction.DateTimeUtc);
+            Assert.Equal(addTransactionCommand.CreditsChange, transaction.CreditsChange, 10);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, transaction.CreditsNew, 10);
+            Assert.Equal(addTransactionCommand.TransactionId, transaction.ExternalId);
+            Assert.Equal(addTransactionCommand.Description, transaction.Description);
+            Assert.Equal(addTransactionCommand.DateTimeUtc, transaction.DateTimeUtc);
 
             var otherAccount2 = await dbContext.Accounts.FindAsync(OtherAccount.Id);
-            Assert.Equal(transactionAdd.DateTimeUtc, otherAccount2.LastChangeUtc);
-            Assert.Equal(OtherAccount.Credits - transactionAdd.CreditsChange, otherAccount2.Credits, 10);
+            Assert.Equal(addTransactionCommand.DateTimeUtc, otherAccount2.LastChangeUtc);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherAccount2.Credits, 10);
 
             var otherTransaction = await dbContext.Transactions
                 .Where(t => t.AccountId == otherAccount2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(-transactionAdd.CreditsChange, otherTransaction.CreditsChange, 10);
-            Assert.Equal(OtherAccount.Credits - transactionAdd.CreditsChange, otherTransaction.CreditsNew, 10);
-            Assert.Equal(transactionAdd.TransactionId, otherTransaction.ExternalId);
-            Assert.Equal(transactionAdd.Description, otherTransaction.Description);
-            Assert.Equal(transactionAdd.DateTimeUtc, otherTransaction.DateTimeUtc);
+            Assert.Equal(-addTransactionCommand.CreditsChange, otherTransaction.CreditsChange, 10);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherTransaction.CreditsNew, 10);
+            Assert.Equal(addTransactionCommand.TransactionId, otherTransaction.ExternalId);
+            Assert.Equal(addTransactionCommand.Description, otherTransaction.Description);
+            Assert.Equal(addTransactionCommand.DateTimeUtc, otherTransaction.DateTimeUtc);
             
             Assert.Equal(transaction.Id, otherTransaction.PrimaryTransactionId);
         }

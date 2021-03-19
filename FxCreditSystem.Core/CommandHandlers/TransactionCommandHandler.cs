@@ -4,10 +4,10 @@ using FxCreditSystem.Common.Commands;
 
 namespace FxCreditSystem.Core
 {
-    public class TransactionCommandHandler
+    public class TransactionCommandHandler : ITransactionCommandHandler
     {
         private readonly ITransactionRepository transactionRepository;
-        
+
         public async Task HandleAsync(AddTransactionCommand addTransactionCommand)
         {
             await transactionRepository.Add(addTransactionCommand);

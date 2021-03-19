@@ -24,7 +24,7 @@ namespace FxCreditSystem.Core.Test
             mockAccountUserRepository.Setup(au => au.Get(master.AuthUserId)).ReturnsAsync(originalAccountUserList);
 
             var userQueryHandler = new UserQueryHandler(mockAccountUserRepository.Object);
-            var accountUserList = await userQueryHandler.GetAccountsForUser(master.AuthUserId);
+            var accountUserList = await userQueryHandler.GetAccounts(master.AuthUserId);
 
             originalAccountUserList.ShouldDeepEqual(accountUserList);
 

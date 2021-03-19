@@ -5,6 +5,6 @@ namespace FxCreditSystem.Common
 {
     public interface ITransactionRepository
     {
-        Task Add(AddTransactionCommand transactionAdd);
+        Task Add(AddTransactionCommand addTransactionCommand);
     }
 }
