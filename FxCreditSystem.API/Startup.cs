@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,8 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace FxCreditSystem.Api
+namespace FxCreditSystem.API
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,7 +33,7 @@ namespace FxCreditSystem.Api
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FxCreditSystem.Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FxCreditSystem.API", Version = "v1" });
             });
 
             services.AddAuthentication(options =>
@@ -54,7 +56,7 @@ namespace FxCreditSystem.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FxCreditSystem.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FxCreditSystem.API v1"));
             }
 
             //app.UseHttpsRedirection();

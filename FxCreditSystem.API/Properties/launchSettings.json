@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "FxCreditSystem.Api": {
+    "FxCreditSystem.API": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

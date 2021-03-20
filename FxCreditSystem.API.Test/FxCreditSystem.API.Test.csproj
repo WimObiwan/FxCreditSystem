@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FxCreditSystem.Api\FxCreditSystem.Api.csproj" />
+    <ProjectReference Include="..\FxCreditSystem.API\FxCreditSystem.API.csproj" />
   </ItemGroup>
 
 </Project>

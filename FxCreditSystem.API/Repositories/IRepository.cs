@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace FxCreditSystem.Api.Repositories
+namespace FxCreditSystem.API.Repositories
 {
     interface IRepository<T>
     {
