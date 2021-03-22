@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using FxCreditSystem.API.DTO;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace FxCreditSystem.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
@@ -28,9 +29,10 @@ namespace FxCreditSystem.API.Controllers
         }
 
         [HttpGet]
-        [Route("{id}/accounts")]
+        [Route("{authUserId}/accounts")]
         public async Task<IActionResult> Get(string authUserId)
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
             var result = await _userQueryHandler.GetAccounts(authUserId);
             return Ok(_mapper.Map<IList<AccountUserResponse>>(result));
         }

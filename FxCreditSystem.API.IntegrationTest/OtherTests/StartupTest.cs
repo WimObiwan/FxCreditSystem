@@ -8,14 +8,14 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace FxCreditSystem.API.Test
+namespace FxCreditSystem.API.IntegrationTest
 {
     public class StartupTest
     {
         [Fact]
         public void ConfigureServices_ShouldSucceed()
         {
-            // 
+            // https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests
             var factory = new WebApplicationFactory<Startup>();
             var client = factory.CreateClient();
         }

@@ -17,3 +17,12 @@ Update packages
 ```
 dotnet list package --outdated
 ```
+
+Migrations
+
+```
+dotnet ef migrations add Initial --project ./FxCreditSystem.Repository
+dotnet ef migrations remove
+
+dotnet ef database update --project ./FxCreditSystem.API
+```

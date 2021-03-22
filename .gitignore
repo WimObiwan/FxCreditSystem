@@ -3,3 +3,5 @@ obj/
 .vscode/
 CoverageResults/
 TestResults/
+
+appsettings.Local.json
