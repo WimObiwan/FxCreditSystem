@@ -19,7 +19,7 @@ namespace FxCreditSystem.API.Test
         public async Task GetAccounts_ShouldSucceed()
         {
             Bogus.Faker faker = new Bogus.Faker();
-            var identity = $"test|{faker.Random.Hexadecimal(16, "")}";
+            var identity = faker.Random.Identity();
 
             var userId = faker.Random.Guid();
             var accountUserFaker = new AccountUserFaker().RuleFor(au => au.UserId, userId);

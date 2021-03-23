@@ -1,7 +1,6 @@
-using System;
 using System.Threading.Tasks;
-using DeepEqual.Syntax;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Fakers;
 using Moq;
 using Xunit;
 
@@ -13,7 +12,7 @@ namespace FxCreditSystem.Core.Test
         public async Task CheckAuthorizedUser_ShouldSucceed()
         {
             Bogus.Faker faker = new Bogus.Faker();
-            var identity = $"test|{faker.Random.Hexadecimal(16, "")}";
+            var identity = faker.Random.Identity();
 
             var accountUserFaker = new Common.Fakers.AccountUserFaker();
             var master = accountUserFaker.Generate();
@@ -34,7 +33,7 @@ namespace FxCreditSystem.Core.Test
         public async Task CheckAuthorizedUser_WithoutAccess_ShouldSucceed()
         {
             Bogus.Faker faker = new Bogus.Faker();
-            var identity = $"test|{faker.Random.Hexadecimal(16, "")}";
+            var identity = faker.Random.Identity();
 
             var accountUserFaker = new Common.Fakers.AccountUserFaker();
             var master = accountUserFaker.Generate();

@@ -1,4 +1,5 @@
 using Bogus;
+using FxCreditSystem.Common.Fakers;
 
 namespace FxCreditSystem.Repository.Fakers
 {
@@ -8,7 +9,7 @@ namespace FxCreditSystem.Repository.Fakers
         {
             StrictMode(true);
             Ignore(ui => ui.Id);
-            RuleFor(ui => ui.Identity, f => $"test|{f.Random.Hexadecimal(16, "")}");
+            RuleFor(ui => ui.Identity, f => f.Random.Identity());
             Ignore(ui => ui.UserId);
             Ignore(ui => ui.User);
         }
