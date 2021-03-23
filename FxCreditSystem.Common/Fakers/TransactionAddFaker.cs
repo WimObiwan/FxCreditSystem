@@ -8,7 +8,7 @@ namespace FxCreditSystem.Common.Fakers
         public AddTransactionCommandFaker()
         {
             StrictMode(true);
-            RuleFor(ta => ta.AuthUserId, f => f.Random.Hexadecimal(16));
+            RuleFor(ta => ta.UserId, f => f.Random.Guid());
             RuleFor(ta => ta.AccountId, f => f.Random.Guid());
             RuleFor(ta => ta.TransactionId, f => f.Random.Guid());
             RuleFor(ta => ta.DateTimeUtc, f => f.Date.Recent(30));

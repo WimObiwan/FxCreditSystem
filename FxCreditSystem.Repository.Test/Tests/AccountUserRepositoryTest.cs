@@ -6,52 +6,43 @@ using Xunit;
 
 namespace FxCreditSystem.Repository.Test
 {
-    public class AccountUserRepositoryTest : Shared.TestBase
+    public class UserRepositoryTest : Shared.TestBase
     {
-        private string AuthUserId => databaseSeeder.AuthUserId;
-        private string OtherAuthUserId => databaseSeeder.OtherAuthUserId;
+        private Guid UserId => databaseSeeder.UserId;
+        private Guid OtherUserId => databaseSeeder.OtherUserId;
         private Entities.Account Account => databaseSeeder.Account;
         private Entities.Account OtherAccount => databaseSeeder.OtherAccount;
 
-        private readonly FxCreditSystem.Repository.AccountUserRepository accountUserRepository;
+        private readonly FxCreditSystem.Repository.UserRepository userRepository;
 
-        public AccountUserRepositoryTest() : base(nameof(AccountUserRepositoryTest))
+        public UserRepositoryTest() : base(nameof(UserRepositoryTest))
         {
-            accountUserRepository = new FxCreditSystem.Repository.AccountUserRepository(dbContext, mapper);
-        }
-
-        [Fact]
-        public async Task Get_WithInvalidArguments_ShouldFail()
-        {
-            await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await accountUserRepository.Get(null));
-            await Assert.ThrowsAsync<ArgumentException>(async () => 
-                await accountUserRepository.Get(""));
+            userRepository = new FxCreditSystem.Repository.UserRepository(dbContext, mapper);
         }
 
         [Fact]
         public async Task Get_WithUnknownUserId_ShouldFail()
         {
-            string unknownUserId = Guid.NewGuid().ToString();
+            Guid unknownUserId = Guid.NewGuid();
 
-            var list = await accountUserRepository.Get(unknownUserId);
+            var list = await userRepository.GetAccounts(unknownUserId);
             Assert.Empty(list);
         }
 
         [Fact]
         public async Task Get_ShouldSucceed()
         {
-            var list = await accountUserRepository.Get(AuthUserId);
+            var list = await userRepository.GetAccounts(UserId);
             var accountUser = Assert.Single(list);
             Assert.Equal(Account.ExternalId, accountUser.AccountId);
             Assert.Equal(Account.Description, accountUser.AccountDescription);
-            Assert.Equal(AuthUserId, accountUser.AuthUserId);
+            Assert.Equal(UserId, accountUser.UserId);
 
-            list = await accountUserRepository.Get(OtherAuthUserId);
+            list = await userRepository.GetAccounts(OtherUserId);
             accountUser = Assert.Single(list);
             Assert.Equal(OtherAccount.ExternalId, accountUser.AccountId);
             Assert.Equal(OtherAccount.Description, accountUser.AccountDescription);
-            Assert.Equal(OtherAuthUserId, accountUser.AuthUserId);
+            Assert.Equal(OtherUserId, accountUser.UserId);
         }
     }
 }

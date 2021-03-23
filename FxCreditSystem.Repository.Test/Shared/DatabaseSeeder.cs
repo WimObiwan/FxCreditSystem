@@ -1,4 +1,5 @@
 
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace FxCreditSystem.Repository.Test.Shared
@@ -7,8 +8,8 @@ namespace FxCreditSystem.Repository.Test.Shared
     {
         private readonly DataContext dbContext;
 
-        public string AuthUserId { get; private set; }
-        public string OtherAuthUserId { get; private set; }
+        public Guid UserId { get; private set; }
+        public Guid OtherUserId { get; private set; }
         public Entities.Account Account { get; private set; }
         public Entities.Account OtherAccount { get; private set; }
 
@@ -20,8 +21,8 @@ namespace FxCreditSystem.Repository.Test.Shared
             var userFaker = new Fakers.UserFaker(); 
             var user = userFaker.Generate();
             var otherUser = userFaker.Generate();
-            AuthUserId = user.AuthUserId;
-            OtherAuthUserId = otherUser.AuthUserId;
+            UserId = user.UserId;
+            OtherUserId = otherUser.UserId;
             dbContext.Users.AddRange(
                 user,
                 otherUser

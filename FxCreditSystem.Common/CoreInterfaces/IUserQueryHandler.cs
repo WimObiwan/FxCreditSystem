@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FxCreditSystem.Common
 {
     public interface IUserQueryHandler
     {
-        Task<IList<Common.Entities.AccountUser>> GetAccounts(string authUserId);
+        Task<IList<Common.Entities.AccountUser>> GetAccounts(string identity, Guid userId);
     }
 }

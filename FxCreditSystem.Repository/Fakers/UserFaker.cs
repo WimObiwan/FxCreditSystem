@@ -8,7 +8,7 @@ namespace FxCreditSystem.Repository.Fakers
         {
             StrictMode(true);
             Ignore(u => u.Id);
-            RuleFor(u => u.AuthUserId, f => $"test|{f.Random.Hexadecimal(16, "")}");
+            RuleFor(u => u.UserId, f => f.Random.Guid());
             RuleFor(u => u.Description, f => $"{f.Person.FirstName} {f.Person.LastName}");
             Ignore(u => u.AccountUsers);
             Ignore(u => u.Accounts);

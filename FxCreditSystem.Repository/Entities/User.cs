@@ -8,7 +8,7 @@ namespace FxCreditSystem.Repository.Entities
     public class User
     {
         public long Id { get; set; }
-        public string AuthUserId { get; set; }
+        public Guid UserId { get; set; }
         public string Description { get; set; }
 
         public List<AccountUser> AccountUsers { get; set; }
@@ -16,12 +16,10 @@ namespace FxCreditSystem.Repository.Entities
 
         public override string ToString()
         {
-            string str = AuthUserId.ToString();
-
             if (!string.IsNullOrEmpty(Description))
-                str += $" ({Description})";
+                return Description;
 
-            return str;
+            return UserId.ToString();
         }
     }
 }

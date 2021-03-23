@@ -4,7 +4,7 @@ namespace FxCreditSystem.Common.Commands
 {
     public class AddTransactionCommand
     {
-        public string AuthUserId { get; set; }
+        public Guid UserId { get; set; }
         public Guid AccountId { get; set; }
         public Guid TransactionId { get; set; }
         public DateTime DateTimeUtc { get; set; }

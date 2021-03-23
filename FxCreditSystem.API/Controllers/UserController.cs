@@ -19,21 +19,23 @@ namespace FxCreditSystem.API.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IMapper _mapper;
+        private IIdentityRetriever _identityRetriever;
         private readonly IUserQueryHandler _userQueryHandler;
 
-        public UserController(ILogger<UserController> logger, IMapper mapper, IUserQueryHandler userQueryHandler)
+        public UserController(ILogger<UserController> logger, IMapper mapper, IIdentityRetriever identityRetriever, IUserQueryHandler userQueryHandler)
         {
             _logger = logger;
             _mapper = mapper;
+            _identityRetriever = identityRetriever;
             _userQueryHandler = userQueryHandler;
         }
 
         [HttpGet]
-        [Route("{authUserId}/accounts")]
-        public async Task<IActionResult> Get(string authUserId)
+        [Route("{userId}/accounts")]
+        public async Task<IActionResult> Get(Guid userId)
         {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier);
-            var result = await _userQueryHandler.GetAccounts(authUserId);
+            var identity = _identityRetriever.GetIdentity(this);
+            var result = await _userQueryHandler.GetAccounts(identity, userId);
             return Ok(_mapper.Map<IList<AccountUserResponse>>(result));
         }
     }

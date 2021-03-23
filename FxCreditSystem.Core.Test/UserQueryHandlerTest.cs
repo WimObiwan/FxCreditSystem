@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DeepEqual.Syntax;
 using FxCreditSystem.Common;
@@ -10,26 +11,61 @@ namespace FxCreditSystem.Core.Test
     {
 
         [Fact]
-        public async Task GetAccountsForUser_ShouldSucceed()
+        public async Task GetAccountsForUser_WithoutAccess_ShouldFail()
         {
+            Bogus.Faker faker = new Bogus.Faker();
+            var identity = $"test|{faker.Random.Hexadecimal(16, "")}";
+
             var accountUserFaker = new Common.Fakers.AccountUserFaker();
             var master = accountUserFaker.Generate();
             var newAccountUserFaker = accountUserFaker
-                .RuleFor(au => au.AuthUserId, master.AuthUserId)
+                .RuleFor(au => au.UserId, master.UserId)
                 .RuleFor(au => au.UserDescription, master.AccountDescription);
 
             var originalAccountUserList = newAccountUserFaker.Generate(3);
 
-            var mockAccountUserRepository = new Mock<IAccountUserRepository>();
-            mockAccountUserRepository.Setup(au => au.Get(master.AuthUserId)).ReturnsAsync(originalAccountUserList);
+            var mockAuthorizationService = new Mock<IAuthorizationService>();
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(false);
 
-            var userQueryHandler = new UserQueryHandler(mockAccountUserRepository.Object);
-            var accountUserList = await userQueryHandler.GetAccounts(master.AuthUserId);
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository.Setup(au => au.GetAccounts(master.UserId)).ReturnsAsync(originalAccountUserList);
+
+            var userQueryHandler = new UserQueryHandler(mockAuthorizationService.Object, mockUserRepository.Object);
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await userQueryHandler.GetAccounts(identity, master.UserId));
+
+            mockUserRepository.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task GetAccountsForUser_ShouldSucceed()
+        {
+            Bogus.Faker faker = new Bogus.Faker();
+            var identity = $"test|{faker.Random.Hexadecimal(16, "")}";
+
+            var accountUserFaker = new Common.Fakers.AccountUserFaker();
+            var master = accountUserFaker.Generate();
+            var newAccountUserFaker = accountUserFaker
+                .RuleFor(au => au.UserId, master.UserId)
+                .RuleFor(au => au.UserDescription, master.AccountDescription);
+
+            var originalAccountUserList = newAccountUserFaker.Generate(3);
+
+            var mockAuthorizationService = new Mock<IAuthorizationService>();
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(true);
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository.Setup(au => au.GetAccounts(master.UserId)).ReturnsAsync(originalAccountUserList);
+
+            var userQueryHandler = new UserQueryHandler(mockAuthorizationService.Object, mockUserRepository.Object);
+            var accountUserList = await userQueryHandler.GetAccounts(identity, master.UserId);
 
             originalAccountUserList.ShouldDeepEqual(accountUserList);
 
-            mockAccountUserRepository.Verify(au => au.Get(master.AuthUserId));
-            mockAccountUserRepository.VerifyNoOtherCalls();
+            mockAuthorizationService.Verify(a => a.CheckAuthorizedUser(identity, master.UserId));
+            mockAuthorizationService.VerifyNoOtherCalls();
+
+            mockUserRepository.Verify(au => au.GetAccounts(master.UserId));
+            mockUserRepository.VerifyNoOtherCalls();
         }
     }
 }

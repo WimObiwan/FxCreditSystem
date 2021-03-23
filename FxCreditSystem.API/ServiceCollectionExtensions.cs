@@ -4,6 +4,12 @@ namespace FxCreditSystem.API
 {
     public static class ServiceCollectionExtensions
     {
+        public static IServiceCollection AddFxCreditSystemAPI(this IServiceCollection services)
+        {
+            services.AddTransient<FxCreditSystem.API.IIdentityRetriever, FxCreditSystem.API.IdentityRetriever>();
+            return services;
+        }
+
         public static IServiceCollection AddFxCreditSystemCore(this IServiceCollection services)
         {
             services.AddTransient<FxCreditSystem.Common.IUserQueryHandler, FxCreditSystem.Core.UserQueryHandler>();
@@ -12,7 +18,7 @@ namespace FxCreditSystem.API
 
         public static IServiceCollection AddFxCreditSystemRepository(this IServiceCollection services)
         {
-            services.AddTransient<FxCreditSystem.Common.IAccountUserRepository, FxCreditSystem.Repository.AccountUserRepository>();
+            services.AddTransient<FxCreditSystem.Common.IUserRepository, FxCreditSystem.Repository.UserRepository>();
             return services;
         }
     }

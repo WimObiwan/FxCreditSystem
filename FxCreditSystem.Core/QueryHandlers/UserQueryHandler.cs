@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FxCreditSystem.Common;
 
@@ -6,16 +7,21 @@ namespace FxCreditSystem.Core
 {
     public class UserQueryHandler : IUserQueryHandler
     {
-        private readonly IAccountUserRepository accountUserRepository;
-        
-        public async Task<IList<Common.Entities.AccountUser>> GetAccounts(string authUserId)
+        private readonly IUserRepository _userRepository;
+        private readonly IAuthorizationService _authorizationService;
+
+        public async Task<IList<Common.Entities.AccountUser>> GetAccounts(string identity, Guid userId)
         {
-            return await accountUserRepository.Get(authUserId);
+            if (!await _authorizationService.CheckAuthorizedUser(identity, userId))
+                throw new UnauthorizedAccessException();
+            
+            return await _userRepository.GetAccounts(userId);
         }
 
-        public UserQueryHandler(IAccountUserRepository accountUserRepository) 
+        public UserQueryHandler(IAuthorizationService authorizationService, IUserRepository userRepository) 
         {
-            this.accountUserRepository = accountUserRepository;
+            _authorizationService = authorizationService;
+            _userRepository = userRepository;
         }
     }
 }

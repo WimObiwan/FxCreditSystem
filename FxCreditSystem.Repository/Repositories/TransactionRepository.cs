@@ -12,14 +12,14 @@ namespace FxCreditSystem.Repository
 {
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly DataContext dataContext;
-        private readonly AccountUserRepository accountUserRepository;
-        private readonly IMapper mapper;
+        private readonly DataContext _dataContext;
+        private readonly UserRepository _userRepository;
+        private readonly IMapper _mapper;
 
         public async Task Add(AddTransactionCommand addTransactionCommand)
         {
             await Add(
-                addTransactionCommand.AuthUserId,
+                addTransactionCommand.UserId,
                 addTransactionCommand.AccountId,
                 addTransactionCommand.TransactionId,
                 addTransactionCommand.DateTimeUtc,
@@ -28,22 +28,20 @@ namespace FxCreditSystem.Repository
                 addTransactionCommand.OtherAccountId);
         }
 
-        private async Task Add(string authUserId, Guid accountId, 
+        private async Task Add(Guid userId, Guid accountId, 
             Guid transactionId, DateTime dateTimeUtc, string description, decimal creditsChange, Guid otherAccountId)
         {
-            if (string.IsNullOrEmpty(authUserId))
-                throw new ArgumentException("Should not be null or empty", nameof(authUserId));
             if (creditsChange == 0m)
                 throw new ArgumentException("Should not be 0", nameof(creditsChange));
 
             try
             {
-                using (var ts = await dataContext.Database.BeginTransactionAsync())
+                using (var ts = await _dataContext.Database.BeginTransactionAsync())
                 {
-                    var account = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
+                    var account = await _dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
                         ?? throw new AccountNotFoundException(accountId);
 
-                    bool valid = await accountUserRepository.Get(account.Id, authUserId);
+                    bool valid = await _userRepository.HasAccount(userId, account.Id);
                     if (!valid)
                         throw new AccountNotFoundException(account.ExternalId);
                     
@@ -53,7 +51,7 @@ namespace FxCreditSystem.Repository
                     if (creditsChange < 0m)
                         VerifyAccountMinimumCredits(account, creditsChange);
 
-                    var otherAccount = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == otherAccountId)
+                    var otherAccount = await _dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == otherAccountId)
                         ?? throw new AccountNotFoundException(accountId);
                     if (creditsChange > 0m)
                     {
@@ -89,11 +87,11 @@ namespace FxCreditSystem.Repository
 
                     otherTransaction.PrimaryTransaction = transaction;
                     
-                    dataContext.Transactions.AddRange(transaction, otherTransaction);
+                    _dataContext.Transactions.AddRange(transaction, otherTransaction);
 
                     await ts.CommitAsync();
 
-                    await dataContext.SaveChangesAsync();
+                    await _dataContext.SaveChangesAsync();
                 }
             }
             catch (DbUpdateException x)
@@ -102,27 +100,25 @@ namespace FxCreditSystem.Repository
             } 
         }
 
-        public async Task<ICollection<Common.Entities.Transaction>> Get(string authUserId, Guid accountId, int limit = int.MaxValue, int offset = 0)
+        public async Task<ICollection<Common.Entities.Transaction>> Get(Guid userId, Guid accountId, int limit = int.MaxValue, int offset = 0)
         {
-            if (string.IsNullOrEmpty(authUserId))
-                throw new ArgumentException("Should not be null or empty", nameof(authUserId));
             if (limit < 0)
                 throw new ArgumentException("Should be zero or positive", nameof(limit));
             if (offset < 0)
                 throw new ArgumentException("Should be zero or positive", nameof(offset));
-            var account = await dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
+            var account = await _dataContext.Accounts.SingleOrDefaultAsync(a => a.ExternalId == accountId)
                 ?? throw new AccountNotFoundException(accountId);
-            bool valid = await accountUserRepository.Get(account.Id, authUserId);
+            bool valid = await _userRepository.HasAccount(userId, account.Id);
             if (!valid)
                 throw new AccountNotFoundException(account.ExternalId);
 
-            var set = dataContext.Transactions.Where(t => t.Account.Id == account.Id);
+            var set = _dataContext.Transactions.Where(t => t.Account.Id == account.Id);
             if (offset > 0)
                 set = set.Skip(offset);
             if (limit < int.MaxValue)
                 set = set.Take(limit);
 
-            return await mapper.ProjectTo<Common.Entities.Transaction>(set).ToListAsync();
+            return await _mapper.ProjectTo<Common.Entities.Transaction>(set).ToListAsync();
         }
 
         private void VerifyAccountMinimumCredits(Account account, decimal creditsChange)
@@ -132,11 +128,11 @@ namespace FxCreditSystem.Repository
                 throw new AccountCreditsInsufficientException(account, creditsNew);
         }
 
-        public TransactionRepository(DataContext dataContext, AccountUserRepository accountUserRepository, IMapper mapper)
+        public TransactionRepository(DataContext dataContext, UserRepository userRepository, IMapper mapper)
         {
-            this.dataContext = dataContext;
-            this.accountUserRepository = accountUserRepository;
-            this.mapper = mapper;
+            _dataContext = dataContext;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
     }
 }

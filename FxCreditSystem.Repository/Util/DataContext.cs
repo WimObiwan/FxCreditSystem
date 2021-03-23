@@ -63,11 +63,11 @@ namespace FxCreditSystem.Repository
                 .HasKey(e => e.Id);
             modelBuilder
                 .Entity<User>()
-                .HasIndex(e => e.AuthUserId)
+                .HasIndex(e => e.UserId)
                 .IsUnique();
             modelBuilder
                 .Entity<User>()
-                .Property(e => e.AuthUserId)
+                .Property(e => e.UserId)
                 .HasMaxLength(256) // https://stackoverflow.com/q/754547
                 .IsUnicode();
             modelBuilder
