@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FxCreditSystem.Common;
 
 namespace FxCreditSystem.Core
 {
@@ -8,23 +9,18 @@ namespace FxCreditSystem.Core
         Task<bool> CheckAuthorizedUser(string identity, Guid userId);
     }
 
-    public interface IUserIdentityRepository
-    {
-        Task<bool> UserHasIdentity(Guid userId, string identity);
-    }
-
     public class AuthorizationService : IAuthorizationService
     {
-        IUserIdentityRepository _userIdentityRepository;
+        IUserRepository _userRepository;
 
-        public AuthorizationService(IUserIdentityRepository userIdentityRepository)
+        public AuthorizationService(IUserRepository userRepository)
         {
-            _userIdentityRepository = userIdentityRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> CheckAuthorizedUser(string identity, Guid userId)
         {
-            if (await _userIdentityRepository.UserHasIdentity(userId, identity))
+            if (await _userRepository.HasIdentity(userId, identity))
                 return true;
 
             // TODO: Implement "admin" access

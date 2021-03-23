@@ -18,15 +18,15 @@ namespace FxCreditSystem.Core.Test
             var accountUserFaker = new Common.Fakers.AccountUserFaker();
             var master = accountUserFaker.Generate();
 
-            var mockUserIdentityRepository = new Mock<IUserIdentityRepository>();
-            mockUserIdentityRepository.Setup(ui => ui.UserHasIdentity(master.UserId, identity)).ReturnsAsync(true);
+            var mockUserIdentityRepository = new Mock<IUserRepository>();
+            mockUserIdentityRepository.Setup(u => u.HasIdentity(master.UserId, identity)).ReturnsAsync(true);
 
             var authorizationService = new AuthorizationService(mockUserIdentityRepository.Object);
             var result = await authorizationService.CheckAuthorizedUser(identity, master.UserId);
 
             Assert.True(result);
             
-            mockUserIdentityRepository.Verify(ui => ui.UserHasIdentity(master.UserId, identity));
+            mockUserIdentityRepository.Verify(u => u.HasIdentity(master.UserId, identity));
             mockUserIdentityRepository.VerifyNoOtherCalls();
         }
 
@@ -39,15 +39,15 @@ namespace FxCreditSystem.Core.Test
             var accountUserFaker = new Common.Fakers.AccountUserFaker();
             var master = accountUserFaker.Generate();
 
-            var mockUserIdentityRepository = new Mock<IUserIdentityRepository>();
-            mockUserIdentityRepository.Setup(ui => ui.UserHasIdentity(master.UserId, identity)).ReturnsAsync(false);
+            var mockUserIdentityRepository = new Mock<IUserRepository>();
+            mockUserIdentityRepository.Setup(u => u.HasIdentity(master.UserId, identity)).ReturnsAsync(false);
 
             var authorizationService = new AuthorizationService(mockUserIdentityRepository.Object);
             var result = await authorizationService.CheckAuthorizedUser(identity, master.UserId);
 
             Assert.False(result);
             
-            mockUserIdentityRepository.Verify(ui => ui.UserHasIdentity(master.UserId, identity));
+            mockUserIdentityRepository.Verify(u => u.HasIdentity(master.UserId, identity));
             mockUserIdentityRepository.VerifyNoOtherCalls();
         }
     }

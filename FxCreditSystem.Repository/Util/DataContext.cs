@@ -10,6 +10,7 @@ namespace FxCreditSystem.Repository
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<AccountUser> AccountUsers { get; set; }
+        public DbSet<UserIdentity> UserIdentities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,11 +64,11 @@ namespace FxCreditSystem.Repository
                 .HasKey(e => e.Id);
             modelBuilder
                 .Entity<User>()
-                .HasIndex(e => e.UserId)
+                .HasIndex(e => e.ExternalId)
                 .IsUnique();
             modelBuilder
                 .Entity<User>()
-                .Property(e => e.UserId)
+                .Property(e => e.ExternalId)
                 .HasMaxLength(256) // https://stackoverflow.com/q/754547
                 .IsUnicode();
             modelBuilder
@@ -76,9 +77,14 @@ namespace FxCreditSystem.Repository
                 .HasMaxLength(256)
                 .IsUnicode();
 
-            // UserAccount
+            // Account
             modelBuilder
                 .Entity<AccountUser>()
+                .HasKey(e => e.Id);
+
+            // UserIdentity
+            modelBuilder
+                .Entity<UserIdentity>()
                 .HasKey(e => e.Id);
 
             // Relation Account-Transaction (1:n)
@@ -110,6 +116,14 @@ namespace FxCreditSystem.Repository
                         .WithMany(a => a.AccountUsers)
                         .HasForeignKey(au => au.AccountId)
                 );
+
+            // Relation User-UserIdentity (1:n)
+            modelBuilder
+                .Entity<UserIdentity>()
+                .HasOne(ui => ui.User)
+                .WithMany(u => u.Identities)
+                .HasForeignKey(ui => ui.UserId);
+
         }
     }
 }

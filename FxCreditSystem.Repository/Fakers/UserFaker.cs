@@ -6,12 +6,14 @@ namespace FxCreditSystem.Repository.Fakers
     {
         public UserFaker()
         {
+            var userIdentityFaker = new UserIdentityFaker();
             StrictMode(true);
             Ignore(u => u.Id);
-            RuleFor(u => u.UserId, f => f.Random.Guid());
+            RuleFor(u => u.ExternalId, f => f.Random.Guid());
             RuleFor(u => u.Description, f => $"{f.Person.FirstName} {f.Person.LastName}");
             Ignore(u => u.AccountUsers);
             Ignore(u => u.Accounts);
+            RuleFor(u => u.Identities, f => userIdentityFaker.Generate(3));
         }
     }
 }

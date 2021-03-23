@@ -15,14 +15,19 @@ namespace FxCreditSystem.Repository
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
 
+        public async Task<bool> HasIdentity(Guid userId, string identity)
+        {
+            return await dataContext.UserIdentities.AnyAsync(ui => ui.User.ExternalId == userId && ui.Identity == identity);
+        }
+
         internal async Task<bool> HasAccount(Guid userId, long accountId)
         {
-            return await dataContext.AccountUsers.AnyAsync(au => au.User.UserId == userId && au.AccountId == accountId);
+            return await dataContext.AccountUsers.AnyAsync(au => au.User.ExternalId == userId && au.AccountId == accountId);
         }
 
         public async Task<IList<Common.Entities.AccountUser>> GetAccounts(Guid userId)
         {
-            var set = dataContext.AccountUsers.Where(au => au.User.UserId == userId);
+            var set = dataContext.AccountUsers.Where(au => au.User.ExternalId == userId);
             return await mapper.ProjectTo<Common.Entities.AccountUser>(set).ToListAsync();
         }
 

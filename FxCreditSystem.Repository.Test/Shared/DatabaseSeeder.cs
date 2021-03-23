@@ -8,8 +8,8 @@ namespace FxCreditSystem.Repository.Test.Shared
     {
         private readonly DataContext dbContext;
 
-        public Guid UserId { get; private set; }
-        public Guid OtherUserId { get; private set; }
+        public Entities.User User { get; private set; }
+        public Entities.User OtherUser { get; private set; }
         public Entities.Account Account { get; private set; }
         public Entities.Account OtherAccount { get; private set; }
 
@@ -21,8 +21,8 @@ namespace FxCreditSystem.Repository.Test.Shared
             var userFaker = new Fakers.UserFaker(); 
             var user = userFaker.Generate();
             var otherUser = userFaker.Generate();
-            UserId = user.UserId;
-            OtherUserId = otherUser.UserId;
+            User = user;
+            OtherUser = otherUser;
             dbContext.Users.AddRange(
                 user,
                 otherUser
@@ -70,6 +70,8 @@ namespace FxCreditSystem.Repository.Test.Shared
 
             dbContext.SaveChanges();
 
+            dbContext.Entry(User).State = EntityState.Detached;
+            dbContext.Entry(OtherUser).State = EntityState.Detached;
             dbContext.Entry(Account).State = EntityState.Detached;
             dbContext.Entry(OtherAccount).State = EntityState.Detached;
         }

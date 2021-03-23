@@ -9,8 +9,8 @@ namespace FxCreditSystem.Repository.Test
 {
     public class TransactionRepositoryTest : Shared.TestBase
     {
-        private Guid UserId => databaseSeeder.UserId;
-        private Guid OtherUserId => databaseSeeder.OtherUserId;
+        private Guid UserId => databaseSeeder.User.ExternalId;
+        private Guid OtherUserId => databaseSeeder.OtherUser.ExternalId;
         private Entities.Account Account => databaseSeeder.Account;
         private Entities.Account OtherAccount => databaseSeeder.OtherAccount;
 

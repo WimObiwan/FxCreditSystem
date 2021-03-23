@@ -8,8 +8,10 @@ namespace FxCreditSystem.Repository.Test
 {
     public class UserRepositoryTest : Shared.TestBase
     {
-        private Guid UserId => databaseSeeder.UserId;
-        private Guid OtherUserId => databaseSeeder.OtherUserId;
+        private Guid UserId => databaseSeeder.User.ExternalId;
+        private Guid OtherUserId => databaseSeeder.OtherUser.ExternalId;
+        private string UserIdentity => databaseSeeder.User.Identities[0].Identity;
+        private string OtherUserIdentity => databaseSeeder.OtherUser.Identities[0].Identity;
         private Entities.Account Account => databaseSeeder.Account;
         private Entities.Account OtherAccount => databaseSeeder.OtherAccount;
 
@@ -21,7 +23,27 @@ namespace FxCreditSystem.Repository.Test
         }
 
         [Fact]
-        public async Task Get_WithUnknownUserId_ShouldFail()
+        public async Task HasIdentity_ShouldSucceed()
+        {
+            var result = await userRepository.HasIdentity(UserId, UserIdentity);
+            Assert.True(result);
+
+            result = await userRepository.HasIdentity(OtherUserId, OtherUserIdentity);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task HasIdentity_WithoutIdentity_ShouldSucceed()
+        {
+            var result = await userRepository.HasIdentity(UserId, OtherUserIdentity);
+            Assert.False(result);
+
+            result = await userRepository.HasIdentity(OtherUserId, UserIdentity);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task GetAccounts_WithUnknownUserId_ShouldFail()
         {
             Guid unknownUserId = Guid.NewGuid();
 
@@ -30,7 +52,7 @@ namespace FxCreditSystem.Repository.Test
         }
 
         [Fact]
-        public async Task Get_ShouldSucceed()
+        public async Task GetAccounts_ShouldSucceed()
         {
             var list = await userRepository.GetAccounts(UserId);
             var accountUser = Assert.Single(list);

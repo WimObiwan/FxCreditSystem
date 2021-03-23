@@ -11,7 +11,7 @@ namespace FxCreditSystem.Repository
             CreateMap<Entities.AccountUser, Common.Entities.AccountUser>()
                 .ForMember(au => au.AccountId, o => o.MapFrom(au => au.Account.ExternalId))
                 .ForMember(au => au.AccountDescription, o => o.MapFrom(au => au.Account.Description))
-                .ForMember(au => au.UserId, o => o.MapFrom(au => au.User.UserId))
+                .ForMember(au => au.UserId, o => o.MapFrom(au => au.User.ExternalId))
                 .ForMember(au => au.UserDescription, o => o.MapFrom(au => au.User.Description));
         }
     }
