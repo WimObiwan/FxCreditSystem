@@ -9,7 +9,7 @@ namespace FxCreditSystem.Repository
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<AccountUser> AccountUsers { get; set; }
+        public DbSet<AccountUserLink> AccountUsers { get; set; }
         public DbSet<UserIdentity> UserIdentities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -79,7 +79,7 @@ namespace FxCreditSystem.Repository
 
             // Account
             modelBuilder
-                .Entity<AccountUser>()
+                .Entity<AccountUserLink>()
                 .HasKey(e => e.Id);
 
             // UserIdentity
@@ -106,7 +106,7 @@ namespace FxCreditSystem.Repository
                 .Entity<Account>()
                 .HasMany(a => a.Users)
                 .WithMany(u => u.Accounts)
-                .UsingEntity<AccountUser>(
+                .UsingEntity<AccountUserLink>(
                     au => au
                         .HasOne(au => au.User)
                         .WithMany(a => a.AccountUsers)

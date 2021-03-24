@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace FxCreditSystem.API
         string GetIdentity(ControllerBase controller);
     }
 
+    [ExcludeFromCodeCoverage]
     public class IdentityRetriever : IIdentityRetriever
     {
         public string GetIdentity(ControllerBase controller)

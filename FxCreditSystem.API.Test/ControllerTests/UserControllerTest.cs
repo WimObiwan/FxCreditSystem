@@ -36,10 +36,14 @@ namespace FxCreditSystem.API.Test
 
             var userController = new UserController(logger.Object, mapper, mockIdentityRetriever.Object, mockUserQueryHandler.Object);
 
-            var result = await userController.Get(userId);
+            var result = await userController.GetAccounts(userId);
 
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
             var accountUserResponse = Assert.IsType<List<AccountUserResponse>>(okObjectResult.Value);
+            Assert.Equal(accountUser.AccountId, accountUserResponse[0].AccountId);
+            Assert.Equal(accountUser.AccountDescription, accountUserResponse[0].AccountDescription);
+            Assert.Equal(accountUser.UserId, accountUserResponse[0].UserId);
+            Assert.Equal(accountUser.UserDescription, accountUserResponse[0].UserDescription);
 
             mockUserQueryHandler.Verify(uqh => uqh.GetAccounts(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
             mockUserQueryHandler.VerifyNoOtherCalls();

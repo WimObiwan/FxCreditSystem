@@ -6,7 +6,7 @@ namespace FxCreditSystem.API.DTO
     {
         public Guid AccountId { get; set; }
         public string AccountDescription { get; set; }
-        public string AuthUserId { get; set; }
+        public Guid UserId { get; set; }
         public string UserDescription { get; set; }
     }
 }

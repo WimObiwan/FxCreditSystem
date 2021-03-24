@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace FxCreditSystem.Repository.Entities
 {
-    public class AccountUser
+    public class AccountUserLink
     {
         public long Id { get; set; }        
 

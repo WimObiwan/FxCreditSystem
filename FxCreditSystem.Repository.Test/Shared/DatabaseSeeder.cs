@@ -38,12 +38,12 @@ namespace FxCreditSystem.Repository.Test.Shared
             );
 
             dbContext.AccountUsers.AddRange(
-                new Entities.AccountUser
+                new Entities.AccountUserLink
                 {
                     Account = Account,
                     User = user,
                 },
-                new Entities.AccountUser
+                new Entities.AccountUserLink
                 {
                     Account = OtherAccount,
                     User = otherUser,

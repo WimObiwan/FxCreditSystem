@@ -35,7 +35,7 @@ namespace FxCreditSystem.API.Controllers
         /// </summary>       
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> Get(Guid userId)
+        public async Task<IActionResult> GetAccounts(Guid userId)
         {
             var identity = _identityRetriever.GetIdentity(this);
             var result = await _userQueryHandler.GetAccounts(identity, userId);

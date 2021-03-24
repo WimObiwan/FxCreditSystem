@@ -16,7 +16,7 @@ namespace FxCreditSystem.Repository.Entities
         public DateTime LastChangeUtc { get; set; }
 
         public List<Transaction> Transactions { get; set; }
-        public List<AccountUser> AccountUsers { get; set; }
+        public List<AccountUserLink> AccountUsers { get; set; }
         public ICollection<User> Users { get; set; }
         
         public override string ToString()

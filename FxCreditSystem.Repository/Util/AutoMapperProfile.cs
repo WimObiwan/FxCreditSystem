@@ -8,7 +8,7 @@ namespace FxCreditSystem.Repository
         {
             CreateMap<Entities.Transaction, Common.Entities.Transaction>()
                 .ForMember(t => t.Id, o => o.MapFrom(t => t.ExternalId));
-            CreateMap<Entities.AccountUser, Common.Entities.AccountUser>()
+            CreateMap<Entities.AccountUserLink, Common.Entities.AccountUser>()
                 .ForMember(au => au.AccountId, o => o.MapFrom(au => au.Account.ExternalId))
                 .ForMember(au => au.AccountDescription, o => o.MapFrom(au => au.Account.Description))
                 .ForMember(au => au.UserId, o => o.MapFrom(au => au.User.ExternalId))
