@@ -30,6 +30,9 @@ namespace FxCreditSystem.API.Controllers
             _userQueryHandler = userQueryHandler;
         }
 
+        /// <summary>
+        ///     Gets accounts of a user
+        /// </summary>       
         [HttpGet]
         [Route("{userId}/accounts")]
         public async Task<IActionResult> Get(Guid userId)

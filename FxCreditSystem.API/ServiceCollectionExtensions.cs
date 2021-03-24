@@ -8,19 +8,20 @@ namespace FxCreditSystem.API
     {
         public static IServiceCollection AddFxCreditSystemAPI(this IServiceCollection services)
         {
-            services.AddTransient<FxCreditSystem.API.IIdentityRetriever, FxCreditSystem.API.IdentityRetriever>();
+            services.AddTransient<API.IIdentityRetriever, API.IdentityRetriever>();
             return services;
         }
 
         public static IServiceCollection AddFxCreditSystemCore(this IServiceCollection services)
         {
-            services.AddTransient<FxCreditSystem.Common.IUserQueryHandler, FxCreditSystem.Core.UserQueryHandler>();
+            services.AddTransient<Common.IUserQueryHandler, Core.UserQueryHandler>();
+            services.AddTransient<Core.IAuthorizationService, Core.AuthorizationService>();
             return services;
         }
 
         public static IServiceCollection AddFxCreditSystemRepository(this IServiceCollection services)
         {
-            services.AddTransient<FxCreditSystem.Common.IUserRepository, FxCreditSystem.Repository.UserRepository>();
+            services.AddTransient<Common.IUserRepository, Repository.UserRepository>();
             return services;
         }
     }
