@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -31,7 +31,7 @@ namespace FxCreditSystem.API.Controllers
         }
 
         /// <summary>
-        ///     Gets accounts of a user
+        ///     Gets identities of a user
         /// </summary>       
         [HttpGet]
         [Route("{userId}/identities")]
