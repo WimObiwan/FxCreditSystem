@@ -16,6 +16,39 @@ namespace FxCreditSystem.API.Test
     public class UserControllerTest
     {
         [Fact]
+        public async Task GetIdentities_ShouldSucceed()
+        {
+            Bogus.Faker faker = new Bogus.Faker();
+            var identity = faker.Random.Identity();
+
+            var userId = faker.Random.Guid();
+            var userIdentityFaker = new UserIdentityFaker().RuleFor(au => au.UserId, userId);
+            var userIdentity = userIdentityFaker.Generate();
+
+            var logger = new Mock<ILogger<UserController>>();
+            var mapper = new MapperConfiguration(c => c.AddProfile<AutoMapperProfile>()).CreateMapper();
+
+            var mockIdentityRetriever = new Mock<IIdentityRetriever>();
+            mockIdentityRetriever.Setup(uqh => uqh.GetIdentity(It.IsAny<ControllerBase>())).Returns(identity);
+
+            var mockUserQueryHandler = new Mock<IUserQueryHandler>();
+            mockUserQueryHandler.Setup(uqh => uqh.GetIdentities(identity, userId)).ReturnsAsync(new [] { userIdentity });
+
+            var userController = new UserController(logger.Object, mapper, mockIdentityRetriever.Object, mockUserQueryHandler.Object);
+
+            var result = await userController.GetIdentities(userId);
+
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
+            var accountUserResponse = Assert.IsType<List<UserIdentityResponse>>(okObjectResult.Value);
+            var accountUserResponse0 = accountUserResponse[0];
+            Assert.Equal(userIdentity.UserId, accountUserResponse0.UserId);
+            Assert.Equal(userIdentity.Identity, accountUserResponse0.Identity);
+
+            mockUserQueryHandler.Verify(uqh => uqh.GetIdentities(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
+            mockUserQueryHandler.VerifyNoOtherCalls();
+        }
+
+        [Fact]
         public async Task GetAccounts_ShouldSucceed()
         {
             Bogus.Faker faker = new Bogus.Faker();

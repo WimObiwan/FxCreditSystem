@@ -8,6 +8,7 @@ namespace FxCreditSystem.Common
     public interface IUserRepository
     {
         Task<bool> HasIdentity(Guid userId, string identity);
+        Task<IList<UserIdentity>> GetIdentities(Guid userId);
         Task<IList<AccountUser>> GetAccounts(Guid userId);
     }
 }

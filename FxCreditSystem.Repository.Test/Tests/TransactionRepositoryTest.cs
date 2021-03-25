@@ -95,7 +95,7 @@ namespace FxCreditSystem.Repository.Test
                 .RuleFor(ta => ta.UserId, UserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
-                .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(-Account.Credits - 10.0m - 0.01m, -Account.Credits - 10.0m - 50m));
+                .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(-Account.Credits + Account.MinimumCredits - 0.01m, -Account.Credits + Account.MinimumCredits - 50m));
 
             var addTransactionCommand = addTransactionCommandFaker.Generate();
 

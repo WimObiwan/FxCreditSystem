@@ -34,6 +34,18 @@ namespace FxCreditSystem.API.Controllers
         ///     Gets accounts of a user
         /// </summary>       
         [HttpGet]
+        [Route("{userId}/identities")]
+        public async Task<IActionResult> GetIdentities(Guid userId)
+        {
+            var identity = _identityRetriever.GetIdentity(this);
+            var result = await _userQueryHandler.GetIdentities(identity, userId);
+            return Ok(_mapper.Map<IList<UserIdentityResponse>>(result));
+        }
+
+        /// <summary>
+        ///     Gets accounts of a user
+        /// </summary>       
+        [HttpGet]
         [Route("{userId}/accounts")]
         public async Task<IActionResult> GetAccounts(Guid userId)
         {

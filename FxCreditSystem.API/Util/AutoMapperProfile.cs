@@ -7,6 +7,7 @@ namespace FxCreditSystem.API
     {
         public AutoMapperProfile()
         {
+            CreateMap<Common.Entities.UserIdentity, UserIdentityResponse>();
             CreateMap<Common.Entities.AccountUser, AccountUserResponse>();
         }
     }

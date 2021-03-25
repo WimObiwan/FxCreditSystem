@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Entities;
 
 namespace FxCreditSystem.Core
 {
@@ -9,6 +10,14 @@ namespace FxCreditSystem.Core
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthorizationService _authorizationService;
+
+        public async Task<IList<UserIdentity>> GetIdentities(string identity, Guid userId)
+        {
+            if (!await _authorizationService.CheckAuthorizedUser(identity, userId))
+                throw new UnauthorizedAccessException();
+            
+            return await _userRepository.GetIdentities(userId);
+        }
 
         public async Task<IList<Common.Entities.AccountUser>> GetAccounts(string identity, Guid userId)
         {

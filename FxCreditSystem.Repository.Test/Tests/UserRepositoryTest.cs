@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using FxCreditSystem.Common.Fakers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -43,12 +44,46 @@ namespace FxCreditSystem.Repository.Test
         }
 
         [Fact]
+        public async Task HasIdentity_WithUnknownUser_ShouldFail()
+        {
+            Bogus.Faker faker = new Bogus.Faker();
+            var identity = faker.Random.Identity();
+            var userId = faker.Random.Guid();
+
+            await Assert.ThrowsAsync<UserNotFoundException>(async () =>
+                await userRepository.HasIdentity(userId, identity));
+        }
+
+        [Fact]
+        public async Task GetIdentities_WithUnknownUserId_ShouldFail()
+        {
+            Guid unknownUserId = Guid.NewGuid();
+
+            await Assert.ThrowsAsync<UserNotFoundException>(async () =>
+                await userRepository.GetIdentities(unknownUserId));
+        }
+
+        [Fact]
+        public async Task GetIdentities_ShouldSucceed()
+        {
+            var list = await userRepository.GetIdentities(UserId);
+            var userIdentity = Assert.Single(list, ui => ui.Identity == UserIdentity);
+            Assert.Equal(UserId, userIdentity.UserId);
+            Assert.Equal(UserIdentity, userIdentity.Identity);
+
+            list = await userRepository.GetIdentities(OtherUserId);
+            userIdentity = Assert.Single(list, ui => ui.Identity == OtherUserIdentity);
+            Assert.Equal(OtherUserId, userIdentity.UserId);
+            Assert.Equal(OtherUserIdentity, userIdentity.Identity);
+        }
+
+        [Fact]
         public async Task GetAccounts_WithUnknownUserId_ShouldFail()
         {
             Guid unknownUserId = Guid.NewGuid();
 
-            var list = await userRepository.GetAccounts(unknownUserId);
-            Assert.Empty(list);
+            await Assert.ThrowsAsync<UserNotFoundException>(async () =>
+                await userRepository.GetAccounts(unknownUserId));
         }
 
         [Fact]
