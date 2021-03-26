@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FxCreditSystem.Repository
 {
-    public class AccountNotFoundException : Exception
+    public class AccountNotFoundException : Common.Exceptions.NotFoundException
     {
         public Guid AccountId { get; private set; }
 

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FxCreditSystem.Repository
 {
-    public class TransactionBetweenSameAccountsException : Exception
+    public class TransactionBetweenSameAccountsException : Common.Exceptions.InvalidOperationException
     {
         public Guid AccountId { get; private set; }
 

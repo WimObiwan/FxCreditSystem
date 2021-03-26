@@ -119,12 +119,13 @@ namespace FxCreditSystem.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => 
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FxCreditSystem.API v1");
-                });
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/openapi/v1/openapi.json", "FxCreditSystem.API v1");
+            });
 
             if (_configuration.GetValue("TroubleshootAuthentication", false))
                 Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;

@@ -38,11 +38,12 @@ namespace FxCreditSystem.API.Test
 
             var result = await userController.GetIdentities(userId);
 
-            var okObjectResult = Assert.IsType<OkObjectResult>(result);
-            var accountUserResponse = Assert.IsType<List<UserIdentityResponse>>(okObjectResult.Value);
-            var accountUserResponse0 = accountUserResponse[0];
-            Assert.Equal(userIdentity.UserId, accountUserResponse0.UserId);
-            Assert.Equal(userIdentity.Identity, accountUserResponse0.Identity);
+            var actionResult = Assert.IsType<ActionResult<IList<UserIdentityResponse>>>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var userIdentityResponses = Assert.IsType<List<UserIdentityResponse>>(okObjectResult.Value);
+            var userIdentityResponse = userIdentityResponses[0];
+            Assert.Equal(userIdentity.UserId, userIdentityResponse.UserId);
+            Assert.Equal(userIdentity.Identity, userIdentityResponse.Identity);
 
             mockUserQueryHandler.Verify(uqh => uqh.GetIdentities(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
             mockUserQueryHandler.VerifyNoOtherCalls();
@@ -71,12 +72,14 @@ namespace FxCreditSystem.API.Test
 
             var result = await userController.GetAccounts(userId);
 
-            var okObjectResult = Assert.IsType<OkObjectResult>(result);
-            var accountUserResponse = Assert.IsType<List<AccountUserResponse>>(okObjectResult.Value);
-            Assert.Equal(accountUser.AccountId, accountUserResponse[0].AccountId);
-            Assert.Equal(accountUser.AccountDescription, accountUserResponse[0].AccountDescription);
-            Assert.Equal(accountUser.UserId, accountUserResponse[0].UserId);
-            Assert.Equal(accountUser.UserDescription, accountUserResponse[0].UserDescription);
+            var actionResult = Assert.IsType<ActionResult<IList<AccountUserResponse>>>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var accountUserResponses = Assert.IsType<List<AccountUserResponse>>(okObjectResult.Value);
+            var accountUserResponse = Assert.Single(accountUserResponses);
+            Assert.Equal(accountUser.AccountId, accountUserResponse.AccountId);
+            Assert.Equal(accountUser.AccountDescription, accountUserResponse.AccountDescription);
+            Assert.Equal(accountUser.UserId, accountUserResponse.UserId);
+            Assert.Equal(accountUser.UserDescription, accountUserResponse.UserDescription);
 
             mockUserQueryHandler.Verify(uqh => uqh.GetAccounts(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
             mockUserQueryHandler.VerifyNoOtherCalls();

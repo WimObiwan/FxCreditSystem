@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FxCreditSystem.Repository
 {
-    public class DebetFromOtherAccountNotAllowedException : Exception
+    public class DebetFromOtherAccountNotAllowedException : Common.Exceptions.InvalidOperationException
     {
         public Guid AccountId { get; private set; }
         public Guid OtherAccountId { get; private set; }

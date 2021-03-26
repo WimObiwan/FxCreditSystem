@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -35,7 +35,7 @@ namespace FxCreditSystem.API.Controllers
         /// </summary>       
         [HttpGet]
         [Route("{userId}/identities")]
-        public async Task<IActionResult> GetIdentities(Guid userId)
+        public async Task<ActionResult<IList<UserIdentityResponse>>> GetIdentities(Guid userId)
         {
             var identity = _identityRetriever.GetIdentity(this);
             var result = await _userQueryHandler.GetIdentities(identity, userId);
@@ -47,7 +47,7 @@ namespace FxCreditSystem.API.Controllers
         /// </summary>       
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetAccounts(Guid userId)
+        public async Task<ActionResult<IList<AccountUserResponse>>> GetAccounts(Guid userId)
         {
             var identity = _identityRetriever.GetIdentity(this);
             var result = await _userQueryHandler.GetAccounts(identity, userId);

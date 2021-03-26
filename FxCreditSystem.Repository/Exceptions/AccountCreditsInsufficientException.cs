@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace FxCreditSystem.Repository
 {
-    public class AccountCreditsInsufficientException : Exception
+    public class AccountCreditsInsufficientException : FxCreditSystem.Common.Exceptions.InvalidOperationException
     {
         public Guid ExternalId { get; private set; }
         public string Description { get; private set; }

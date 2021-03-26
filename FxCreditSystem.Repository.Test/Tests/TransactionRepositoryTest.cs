@@ -149,28 +149,28 @@ namespace FxCreditSystem.Repository.Test
 
             var account2 = await dbContext.Accounts.FindAsync(Account.Id);
             Assert.Equal(addTransactionCommand.DateTimeUtc, account2.LastChangeUtc);
-            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, account2.Credits, 10);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, account2.Credits, 9);
 
             var transaction = await dbContext.Transactions
                 .Where(t => t.AccountId == account2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(addTransactionCommand.CreditsChange, transaction.CreditsChange, 10);
-            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, transaction.CreditsNew, 10);
+            Assert.Equal(addTransactionCommand.CreditsChange, transaction.CreditsChange, 9);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, transaction.CreditsNew, 9);
             Assert.Equal(addTransactionCommand.TransactionId, transaction.ExternalId);
             Assert.Equal(addTransactionCommand.Description, transaction.Description);
             Assert.Equal(addTransactionCommand.DateTimeUtc, transaction.DateTimeUtc);
 
             var otherAccount2 = await dbContext.Accounts.FindAsync(OtherAccount.Id);
             Assert.Equal(addTransactionCommand.DateTimeUtc, otherAccount2.LastChangeUtc);
-            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherAccount2.Credits, 10);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherAccount2.Credits, 9);
 
             var otherTransaction = await dbContext.Transactions
                 .Where(t => t.AccountId == otherAccount2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(-addTransactionCommand.CreditsChange, otherTransaction.CreditsChange, 10);
-            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherTransaction.CreditsNew, 10);
+            Assert.Equal(-addTransactionCommand.CreditsChange, otherTransaction.CreditsChange, 9);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherTransaction.CreditsNew, 9);
             Assert.Equal(addTransactionCommand.TransactionId, otherTransaction.ExternalId);
             Assert.Equal(addTransactionCommand.Description, otherTransaction.Description);
             Assert.Equal(addTransactionCommand.DateTimeUtc, otherTransaction.DateTimeUtc);
