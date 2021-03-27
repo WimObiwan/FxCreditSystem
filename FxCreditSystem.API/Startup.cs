@@ -116,10 +116,7 @@ namespace FxCreditSystem.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // Detailed Exception info in Development environment is handled by ErrorHandlerMiddleware
 
             app.UseSwagger();
             app.UseSwaggerUI(c => 
@@ -136,6 +133,8 @@ namespace FxCreditSystem.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
