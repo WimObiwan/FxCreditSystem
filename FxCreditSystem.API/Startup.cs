@@ -180,9 +180,11 @@ namespace FxCreditSystem.API
                     var loggerFactory = ctx.HttpContext.RequestServices
                         .GetRequiredService<ILoggerFactory>();
                     var logger = loggerFactory.CreateLogger<Startup>();
+                    var exceptionFormatter = ctx.HttpContext.RequestServices
+                        .GetRequiredService<IExceptionFormatter>();
 
                     ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    logger.LogWarning("Authentication failed: " + FlattenException(ctx.Exception, false));
+                    logger.LogWarning("Authentication failed: " + exceptionFormatter.GetText(ctx.Exception, false));
                     return Task.CompletedTask;
                 }
             };
@@ -194,11 +196,14 @@ namespace FxCreditSystem.API
             {
                 OnAuthenticationFailed = ctx =>
                 {
+                    var exceptionFormatter = ctx.HttpContext.RequestServices
+                        .GetRequiredService<IExceptionFormatter>();
+
                     ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     ctx.HttpContext.Items["Message"] =
                         ctx.HttpContext.Items["Message"]
                         + "From OnAuthenticationFailed:\n"
-                        + FlattenException(ctx.Exception, true) + "\n";
+                        + exceptionFormatter.GetText(ctx.Exception, true) + "\n";
                     return Task.CompletedTask;
                 },
 
@@ -238,18 +243,6 @@ namespace FxCreditSystem.API
                     return Task.CompletedTask;
                 }
             };
-        }
-
-        public static string FlattenException(Exception exception, bool includeCallStack)
-        {
-            var stringBuilder = new StringBuilder();
-            while (exception != null)
-            {
-                stringBuilder.AppendLine(exception.Message);
-                stringBuilder.AppendLine(exception.StackTrace);
-                exception = exception.InnerException;
-            }
-            return stringBuilder.ToString();
         }
     }
 }

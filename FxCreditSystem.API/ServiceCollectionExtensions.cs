@@ -9,6 +9,7 @@ namespace FxCreditSystem.API
         public static IServiceCollection AddFxCreditSystemAPI(this IServiceCollection services)
         {
             services.AddTransient<API.IIdentityRetriever, API.IdentityRetriever>();
+            services.AddTransient<API.IExceptionFormatter, API.ExceptionFormatter>();
             return services;
         }
 
