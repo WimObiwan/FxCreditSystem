@@ -36,7 +36,16 @@ namespace FxCreditSystem.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(c =>
+            {
+                c.Filters.Add(new ConsumesAttribute("application/json"));
+                c.Filters.Add(new ProducesAttribute("application/json"));
+                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.OK));
+                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.NotFound));
+                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.BadRequest));
+                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.InternalServerError));
+            });
+
             services.AddApiVersioning(options =>
             {
                 options.ReportApiVersions = true;
