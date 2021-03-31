@@ -12,6 +12,9 @@ using Microsoft.Extensions.Logging;
 
 namespace FxCreditSystem.API.Controllers
 {
+    /// <summary>
+    ///   Endpoint for User interactions
+    /// </summary>
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
@@ -22,6 +25,9 @@ namespace FxCreditSystem.API.Controllers
         private IIdentityRetriever _identityRetriever;
         private readonly IUserQueryHandler _userQueryHandler;
 
+        /// <summary>
+        ///   Endpoint for User interactions
+        /// </summary>
         public UserController(ILogger<UserController> logger, IMapper mapper, IIdentityRetriever identityRetriever, IUserQueryHandler userQueryHandler)
         {
             _logger = logger;

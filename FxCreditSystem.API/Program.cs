@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace FxCreditSystem.API
 {
     [ExcludeFromCodeCoverage]
-    public class Program
+    internal class Program
     {
         public static void Main(string[] args)
         {

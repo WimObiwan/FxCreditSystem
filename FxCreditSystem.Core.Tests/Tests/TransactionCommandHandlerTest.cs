@@ -5,7 +5,7 @@ using FxCreditSystem.Common.Commands;
 using Moq;
 using Xunit;
 
-namespace FxCreditSystem.Core.Test
+namespace FxCreditSystem.Core.Tests
 {
     public class TransactionCommandHandlerTest
     {

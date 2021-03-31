@@ -5,7 +5,7 @@ using FxCreditSystem.Common.Fakers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace FxCreditSystem.Repository.Test
+namespace FxCreditSystem.Repository.Tests
 {
     public class UserRepositoryTest : Shared.TestBase
     {

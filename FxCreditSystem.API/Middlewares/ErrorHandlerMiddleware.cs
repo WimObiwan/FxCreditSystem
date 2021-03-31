@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace FxCreditSystem.API
 {
     [ExcludeFromCodeCoverage]
-    public class ErrorHandlerMiddleware
+    internal class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
 

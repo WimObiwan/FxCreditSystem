@@ -5,15 +5,15 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.API", "FxCreditSystem.API\FxCreditSystem.API.csproj", "{559075F8-18A3-4D33-A804-28B2C94815BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.API.Test", "FxCreditSystem.API.Test\FxCreditSystem.API.Test.csproj", "{2D41491A-9C21-4742-968F-697D375AB70B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.API.Tests", "FxCreditSystem.API.Tests\FxCreditSystem.API.Tests.csproj", "{2D41491A-9C21-4742-968F-697D375AB70B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Core", "FxCreditSystem.Core\FxCreditSystem.Core.csproj", "{FA8BC1BA-31B4-4BD5-B5F4-5C5977DD5BD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Core.Test", "FxCreditSystem.Core.Test\FxCreditSystem.Core.Test.csproj", "{A2E14CC7-E149-46CD-8002-25906EF4155F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Core.Tests", "FxCreditSystem.Core.Tests\FxCreditSystem.Core.Tests.csproj", "{A2E14CC7-E149-46CD-8002-25906EF4155F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Repository", "FxCreditSystem.Repository\FxCreditSystem.Repository.csproj", "{26BE5D6B-6468-43FD-81ED-98A0E4FD3914}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Repository.Test", "FxCreditSystem.Repository.Test\FxCreditSystem.Repository.Test.csproj", "{6FAC0616-269E-4787-B625-0FF30BF6F7D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxCreditSystem.Repository.Tests", "FxCreditSystem.Repository.Tests\FxCreditSystem.Repository.Tests.csproj", "{6FAC0616-269E-4787-B625-0FF30BF6F7D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

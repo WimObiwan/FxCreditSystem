@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace FxCreditSystem.API
 {
-    public interface IExceptionFormatter
+    internal interface IExceptionFormatter
     {
         string GetText(Exception exception, bool includeCallStack);
     }
 
-    public class ExceptionFormatter : IExceptionFormatter
+    internal class ExceptionFormatter : IExceptionFormatter
     {
         public string GetText(Exception exception, bool includeCallStack)
         {

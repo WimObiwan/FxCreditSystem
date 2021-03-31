@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace FxCreditSystem.API.Test
+namespace FxCreditSystem.API.Tests
 {
     public class UserControllerTest
     {

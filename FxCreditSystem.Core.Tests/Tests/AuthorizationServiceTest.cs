@@ -4,7 +4,7 @@ using FxCreditSystem.Common.Fakers;
 using Moq;
 using Xunit;
 
-namespace FxCreditSystem.Core.Test
+namespace FxCreditSystem.Core.Tests
 {
     public class AuthorizationServiceTest
     {

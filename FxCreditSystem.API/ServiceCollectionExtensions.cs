@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FxCreditSystem.API
 {
     [ExcludeFromCodeCoverage]
-    public static class ServiceCollectionExtensions
+    internal static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddFxCreditSystemAPI(this IServiceCollection services)
         {

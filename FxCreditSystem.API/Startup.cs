@@ -24,7 +24,7 @@ using Microsoft.OpenApi.Writers;
 namespace FxCreditSystem.API
 {
     [ExcludeFromCodeCoverage]
-    public class Startup
+    internal class Startup
     {
         private readonly IConfiguration _configuration;
 
@@ -41,9 +41,10 @@ namespace FxCreditSystem.API
                 c.Filters.Add(new ConsumesAttribute("application/json"));
                 c.Filters.Add(new ProducesAttribute("application/json"));
                 c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.OK));
-                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.NotFound));
-                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.BadRequest));
-                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.InternalServerError));
+                c.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest));
+                c.Filters.Add(new ProducesResponseTypeAttribute((int)HttpStatusCode.Unauthorized));
+                c.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), (int)HttpStatusCode.NotFound));
+                c.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError));
             });
 
             services.AddApiVersioning(options =>
@@ -62,19 +63,36 @@ namespace FxCreditSystem.API
                         Version = "v1"
                     });
 
-                //First we define the security scheme
-                c.AddSecurityDefinition("Bearer", //Name the security scheme
-                    new OpenApiSecurityScheme{
-                    Description = "JWT Authorization header using the Bearer scheme.",
-                    Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
-                    Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+                // //First we define the security scheme
+                // c.AddSecurityDefinition("Bearer", //Name the security scheme
+                //     new OpenApiSecurityScheme{
+                //     Description = "JWT Authorization header using the Bearer scheme.",
+                //     Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
+                //     Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+                // });
+                
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri("https://foxinnovations.auth.eu-west-1.amazoncognito.com/login"),
+                            //TokenUrl = new Uri("/auth-server/connect/token", UriKind.Relative),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "openid", "openid" },
+                            },
+                        }
+                    }
                 });
-
+                
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement{ 
                     {
                         new OpenApiSecurityScheme{
                             Reference = new OpenApiReference{
-                                Id = "Bearer", //The name of the previously defined security scheme.
+                                Id = "oauth2", //The name of the previously defined security scheme.
                                 Type = ReferenceType.SecurityScheme
                             }
                         },new List<string>()
@@ -131,6 +149,10 @@ namespace FxCreditSystem.API
             app.UseSwaggerUI(c => 
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FxCreditSystem.API v1");
+                c.OAuthClientId(_configuration["AWS:UserPoolClientId"]);
+                c.OAuth2RedirectUrl("https://localhost:5001/swagger/oauth2-redirect.html");
+                //c.RoutePrefix = "";
+                //c.OAuth2RedirectUrl("https://localhost");
             });
 
             if (_configuration.GetValue("TroubleshootAuthentication", false))

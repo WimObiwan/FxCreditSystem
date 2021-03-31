@@ -2,7 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace FxCreditSystem.Repository.Test.Shared
+namespace FxCreditSystem.Repository.Tests.Shared
 {
     public class DatabaseSeeder
     {

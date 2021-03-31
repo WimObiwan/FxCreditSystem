@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace FxCreditSystem.Repository.Test
+namespace FxCreditSystem.Repository.Tests
 {
     public class TransactionRepositoryTest : Shared.TestBase
     {

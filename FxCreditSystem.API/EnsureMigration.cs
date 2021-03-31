@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FxCreditSystem.API
 {
     [ExcludeFromCodeCoverage]
-    public static class EnsureMigration
+    internal static class EnsureMigration
     {
         public static void EnsureMigrationOfContext<T>(this IApplicationBuilder app) where T:DbContext
         {

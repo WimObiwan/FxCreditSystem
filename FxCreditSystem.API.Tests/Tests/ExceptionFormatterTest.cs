@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace FxCreditSystem.API.Test
+namespace FxCreditSystem.API.Tests
 {
     public class ExceptionFormatterTest
     {
