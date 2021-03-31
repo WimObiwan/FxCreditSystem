@@ -145,14 +145,15 @@ namespace FxCreditSystem.API
         {
             // Detailed Exception info in Development environment is handled by ErrorHandlerMiddleware
 
-            app.UseSwagger();
+            app.UseSwagger(c =>
+                c.RouteTemplate = "openapi/{documentName}/openapi.json"
+            );
             app.UseSwaggerUI(c => 
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FxCreditSystem.API v1");
+                c.SwaggerEndpoint("/openapi/v1/openapi.json", "FxCreditSystem.API v1");
                 c.OAuthClientId(_configuration["AWS:UserPoolClientId"]);
-                c.OAuth2RedirectUrl("https://localhost:5001/swagger/oauth2-redirect.html");
-                //c.RoutePrefix = "";
-                //c.OAuth2RedirectUrl("https://localhost");
+                c.OAuth2RedirectUrl("https://localhost:5001/openapi/oauth2-redirect.html");
+                c.RoutePrefix = "openapi";
             });
 
             if (_configuration.GetValue("TroubleshootAuthentication", false))
