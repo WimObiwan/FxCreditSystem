@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -147,7 +148,8 @@ namespace FxCreditSystem.API
             services.AddHealthChecks()
                 .AddSqlite(
                     sqliteConnectionString: _configuration.GetConnectionString("DefaultConnection"), 
-                    name: "sqlite-Default");
+                    name: "sqlite-Default")
+                .AddCheck<SystemInfoHealthCheck>("systeminfo");
             services.AddSingleton<IHealthCheckWriter, ZabbixFriendlyHealthCheckWriter>();
 
             services.AddAutoMapper(
