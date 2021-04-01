@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -10,11 +11,24 @@ namespace FxCreditSystem.API
 {
     internal class SystemInfoHealthCheck : IHealthCheck
     {
-        private IConfiguration configuration;
+        private readonly IConfiguration configuration;
+        private readonly string _version;
+        private readonly DateTime _buildTimestamp;
+        private readonly string _path;
 
         public SystemInfoHealthCheck(IConfiguration configuration)
         {
             this.configuration = configuration;
+            
+            _version = $"{ThisAssembly.Git.SemVer.Major}.{ThisAssembly.Git.SemVer.Minor}.{ThisAssembly.Git.Commits}";
+            #pragma warning disable CS0162
+            if (ThisAssembly.Git.Branch != "master" && ThisAssembly.Git.Branch != "main")
+                _version += $"-{ThisAssembly.Git.Branch}";
+            #pragma warning restore CS0162
+            if (ThisAssembly.Git.Commits != "0")
+                _version += $"+{ThisAssembly.Git.Commit}";
+            _path = Path.GetDirectoryName(GetType().Assembly.Location);
+            _buildTimestamp = File.GetLastWriteTimeUtc(GetType().Assembly.Location);
         }
 
         public Task<HealthCheckResult> CheckHealthAsync(
@@ -22,7 +36,11 @@ namespace FxCreditSystem.API
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var data = new Dictionary<string, object>();
-            data["dotnet"] = Environment.Version.ToString();
+            data["dotnet"] = Environment.Version;
+            data["version"] = _version;
+            data["server"] = Environment.MachineName;
+            data["path"] = _path;
+            data["buildTimestamp"] = _buildTimestamp.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
             var result = new HealthCheckResult(HealthStatus.Healthy, data: data);
             return Task.FromResult(result);
         }
