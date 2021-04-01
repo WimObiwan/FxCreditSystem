@@ -148,6 +148,7 @@ namespace FxCreditSystem.API
                 .AddSqlite(
                     sqliteConnectionString: _configuration.GetConnectionString("DefaultConnection"), 
                     name: "sqlite-Default");
+            services.AddSingleton<IHealthCheckWriter, ZabbixFriendlyHealthCheckWriter>();
 
             services.AddAutoMapper(
                 typeof(AutoMapperProfile), 
@@ -164,7 +165,7 @@ namespace FxCreditSystem.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHealthCheckWriter healthCheckWriter)
         {
             // Detailed Exception info in Development environment is handled by ErrorHandlerMiddleware
 
@@ -195,7 +196,7 @@ namespace FxCreditSystem.API
             app.UseHealthChecks("/hc", new HealthCheckOptions()
             {
                 Predicate = _ => true,
-                ResponseWriter = HealthChecks.UI.Client.UIResponseWriter.WriteHealthCheckUIResponse
+                ResponseWriter = healthCheckWriter.WriteResponse
             });
 
             app.UseEndpoints(endpoints =>
