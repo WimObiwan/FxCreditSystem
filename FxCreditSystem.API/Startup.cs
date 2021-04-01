@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -143,6 +144,11 @@ namespace FxCreditSystem.API
 
             services.AddAuthorization();
 
+            services.AddHealthChecks()
+                .AddSqlite(
+                    sqliteConnectionString: _configuration.GetConnectionString("DefaultConnection"), 
+                    name: "sqlite-Default");
+
             services.AddAutoMapper(
                 typeof(AutoMapperProfile), 
                 typeof(FxCreditSystem.Repository.AutoMapperProfile));
@@ -184,6 +190,13 @@ namespace FxCreditSystem.API
             app.UseAuthorization();
 
             app.UseMiddleware<ErrorHandlerMiddleware>();
+
+            // HealthCheck middleware
+            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = HealthChecks.UI.Client.UIResponseWriter.WriteHealthCheckUIResponse
+            });
 
             app.UseEndpoints(endpoints =>
             {
