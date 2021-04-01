@@ -63,41 +63,58 @@ namespace FxCreditSystem.API
                         Version = "v1"
                     });
 
-                // //First we define the security scheme
-                // c.AddSecurityDefinition("Bearer", //Name the security scheme
-                //     new OpenApiSecurityScheme{
-                //     Description = "JWT Authorization header using the Bearer scheme.",
-                //     Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
-                //     Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
-                // });
-                
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                var authorizationURL = _configuration.GetValue("Swagger:AuthorizationURL", "");
+                if (string.IsNullOrEmpty(authorizationURL))
                 {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        Implicit = new OpenApiOAuthFlow
-                        {
-                            AuthorizationUrl = new Uri("https://foxinnovations.auth.eu-west-1.amazoncognito.com/login"),
-                            //TokenUrl = new Uri("/auth-server/connect/token", UriKind.Relative),
-                            Scopes = new Dictionary<string, string>
-                            {
-                                { "openid", "openid" },
-                            },
-                        }
-                    }
-                });
-                
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement{ 
-                    {
+                    c.AddSecurityDefinition("Bearer",
                         new OpenApiSecurityScheme{
-                            Reference = new OpenApiReference{
-                                Id = "oauth2", //The name of the previously defined security scheme.
-                                Type = ReferenceType.SecurityScheme
+                        Description = "JWT Authorization header using the Bearer scheme.",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer"
+                    });
+
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement{ 
+                        {
+                            new OpenApiSecurityScheme{
+                                Reference = new OpenApiReference{
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            }, new List<string>()
+                        }
+                    });
+                }
+                else
+                {
+                    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                    {
+                        Description = "OAuth2 Implicit flow.",
+                        Type = SecuritySchemeType.OAuth2,
+                        Flows = new OpenApiOAuthFlows
+                        {
+                            Implicit = new OpenApiOAuthFlow
+                            {
+                                AuthorizationUrl = new Uri(authorizationURL),
+                                //TokenUrl = new Uri("/auth-server/connect/token", UriKind.Relative),
+                                Scopes = new Dictionary<string, string>
+                                {
+                                    { "openid", "openid" },
+                                },
                             }
-                        },new List<string>()
-                    }
-                });
+                        }
+                    });
+                    
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement{ 
+                        {
+                            new OpenApiSecurityScheme{
+                                Reference = new OpenApiReference{
+                                    Id = "oauth2", //The name of the previously defined security scheme.
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            }, new List<string>()
+                        }
+                    });
+                }
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
