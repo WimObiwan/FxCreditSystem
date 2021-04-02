@@ -6,23 +6,18 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FxCreditSystem.API
 {
-    [ExcludeFromCodeCoverage]
     internal class SystemInfoHealthCheck : IHealthCheck
     {
-        private readonly IConfiguration configuration;
         private readonly string _version;
         private readonly DateTime _buildTimestamp;
         private readonly string _path;
 
-        public SystemInfoHealthCheck(IConfiguration configuration)
+        public SystemInfoHealthCheck()
         {
-            this.configuration = configuration;
-            
             _version = $"{ThisAssembly.Git.SemVer.Major}.{ThisAssembly.Git.SemVer.Minor}.{ThisAssembly.Git.Commits}";
             #pragma warning disable CS0162
             if (ThisAssembly.Git.Branch != "master" && ThisAssembly.Git.Branch != "main")
