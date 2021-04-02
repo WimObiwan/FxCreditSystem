@@ -1,6 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FxCreditSystem.API
 {
+    [ExcludeFromCodeCoverage]
     internal class SystemInfoHealthCheck : IHealthCheck
     {
         private readonly IConfiguration configuration;
@@ -40,7 +43,9 @@ namespace FxCreditSystem.API
             data["version"] = _version;
             data["server"] = Environment.MachineName;
             data["path"] = _path;
-            data["buildTimestamp"] = _buildTimestamp.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+            data["buildTimestamp"] = _buildTimestamp;
+            data["processStartTimestamp"] = Process.GetCurrentProcess().StartTime.ToUniversalTime();
+            data["memory"] = GC.GetTotalMemory(false);
             var result = new HealthCheckResult(HealthStatus.Healthy, data: data);
             return Task.FromResult(result);
         }
