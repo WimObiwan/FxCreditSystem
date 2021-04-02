@@ -13,7 +13,6 @@ namespace FxCreditSystem.API.Tests
             var systemInfoHealthCheck = new SystemInfoHealthCheck();
             var healthCheckContext = new HealthCheckContext();
             var result = await systemInfoHealthCheck.CheckHealthAsync(healthCheckContext);
-            Assert.NotNull(result);
             Assert.Null(result.Description);
             Assert.Null(result.Exception);
             Assert.Equal(HealthStatus.Healthy, result.Status);
