@@ -1,5 +1,6 @@
 using System;
 using Bogus;
+using FxCreditSystem.Common.Fakers;
 
 namespace FxCreditSystem.Repository.Fakers
 {
@@ -11,8 +12,8 @@ namespace FxCreditSystem.Repository.Fakers
             Ignore(a => a.Id);
             RuleFor(a => a.ExternalId, f => f.Random.Guid());
             RuleFor(a => a.Description, f => f.Lorem.Sentence(3, 8));
-            RuleFor(a => a.MinimumCredits, f => Math.Round(f.Random.Decimal(-1m, -20m), 9));
-            RuleFor(a => a.Credits, f => Math.Round(f.Random.Decimal(100m, 150m), 9));
+            RuleFor(a => a.MinimumCredits, f => f.Random.Money(-1m, -20m));
+            RuleFor(a => a.Credits, f => f.Random.Money(100m, 150m));
             RuleFor(a => a.LastChangeUtc, f => f.Date.Recent(30));
             Ignore(a => a.Transactions);
             Ignore(a => a.AccountUsers);

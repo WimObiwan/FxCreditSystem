@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using FxCreditSystem.Common.Fakers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -96,9 +97,7 @@ namespace FxCreditSystem.Repository.Tests
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
                 .RuleFor(ta => ta.CreditsChange, f => 
-                    Math.Round(
-                        f.Random.Decimal(-Account.Credits + Account.MinimumCredits - 0.01m, -Account.Credits + Account.MinimumCredits - 50m), 
-                        9));
+                    f.Random.Money(-Account.Credits + Account.MinimumCredits - 0.01m, -Account.Credits + Account.MinimumCredits - 50m));
 
             var addTransactionCommand = addTransactionCommandFaker.Generate();
 
@@ -113,7 +112,7 @@ namespace FxCreditSystem.Repository.Tests
                 .RuleFor(ta => ta.UserId, UserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
-                .RuleFor(ta => ta.CreditsChange, f => Math.Round(f.Random.Decimal(+1m, +50m), 9));
+                .RuleFor(ta => ta.CreditsChange, f => f.Random.Money(+1m, +50m));
 
             var addTransactionCommand = addTransactionCommandFaker.Generate();
 

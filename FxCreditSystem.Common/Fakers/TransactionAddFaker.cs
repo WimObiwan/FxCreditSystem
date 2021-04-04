@@ -14,7 +14,7 @@ namespace FxCreditSystem.Common.Fakers
             RuleFor(ta => ta.TransactionId, f => f.Random.Guid());
             RuleFor(ta => ta.DateTimeUtc, f => f.Date.Recent(30));
             RuleFor(ta => ta.Description, f => f.Lorem.Sentence(3, 8));
-            RuleFor(ta => ta.CreditsChange, f => Math.Round(f.Random.Decimal(-1m, -50m), 9));
+            RuleFor(ta => ta.CreditsChange, f => f.Random.Money(-1m, -50m));
             RuleFor(ta => ta.OtherAccountId, f => f.Random.Guid());
         }
     }
