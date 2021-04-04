@@ -95,7 +95,10 @@ namespace FxCreditSystem.Repository.Tests
                 .RuleFor(ta => ta.UserId, UserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
-                .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(-Account.Credits + Account.MinimumCredits - 0.01m, -Account.Credits + Account.MinimumCredits - 50m));
+                .RuleFor(ta => ta.CreditsChange, f => 
+                    Math.Round(
+                        f.Random.Decimal(-Account.Credits + Account.MinimumCredits - 0.01m, -Account.Credits + Account.MinimumCredits - 50m), 
+                        9));
 
             var addTransactionCommand = addTransactionCommandFaker.Generate();
 
@@ -110,7 +113,7 @@ namespace FxCreditSystem.Repository.Tests
                 .RuleFor(ta => ta.UserId, UserId)
                 .RuleFor(ta => ta.AccountId, Account.ExternalId)
                 .RuleFor(ta => ta.OtherAccountId, OtherAccount.ExternalId)
-                .RuleFor(ta => ta.CreditsChange, f => f.Random.Decimal(+1m, +50m));
+                .RuleFor(ta => ta.CreditsChange, f => Math.Round(f.Random.Decimal(+1m, +50m), 9));
 
             var addTransactionCommand = addTransactionCommandFaker.Generate();
 
@@ -149,28 +152,28 @@ namespace FxCreditSystem.Repository.Tests
 
             var account2 = await dbContext.Accounts.FindAsync(Account.Id);
             Assert.Equal(addTransactionCommand.DateTimeUtc, account2.LastChangeUtc);
-            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, account2.Credits, 9);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, account2.Credits);
 
             var transaction = await dbContext.Transactions
                 .Where(t => t.AccountId == account2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(addTransactionCommand.CreditsChange, transaction.CreditsChange, 9);
-            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, transaction.CreditsNew, 9);
+            Assert.Equal(addTransactionCommand.CreditsChange, transaction.CreditsChange);
+            Assert.Equal(Account.Credits + addTransactionCommand.CreditsChange, transaction.CreditsNew);
             Assert.Equal(addTransactionCommand.TransactionId, transaction.ExternalId);
             Assert.Equal(addTransactionCommand.Description, transaction.Description);
             Assert.Equal(addTransactionCommand.DateTimeUtc, transaction.DateTimeUtc);
 
             var otherAccount2 = await dbContext.Accounts.FindAsync(OtherAccount.Id);
             Assert.Equal(addTransactionCommand.DateTimeUtc, otherAccount2.LastChangeUtc);
-            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherAccount2.Credits, 9);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherAccount2.Credits);
 
             var otherTransaction = await dbContext.Transactions
                 .Where(t => t.AccountId == otherAccount2.Id)
                 .OrderByDescending(t => t.Id)
                 .FirstAsync();
-            Assert.Equal(-addTransactionCommand.CreditsChange, otherTransaction.CreditsChange, 9);
-            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherTransaction.CreditsNew, 9);
+            Assert.Equal(-addTransactionCommand.CreditsChange, otherTransaction.CreditsChange);
+            Assert.Equal(OtherAccount.Credits - addTransactionCommand.CreditsChange, otherTransaction.CreditsNew);
             Assert.Equal(addTransactionCommand.TransactionId, otherTransaction.ExternalId);
             Assert.Equal(addTransactionCommand.Description, otherTransaction.Description);
             Assert.Equal(addTransactionCommand.DateTimeUtc, otherTransaction.DateTimeUtc);

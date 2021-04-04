@@ -5,23 +5,27 @@ namespace FxCreditSystem.API.DTO
     /// <summary>
     ///   Link between account and user 
     /// </summary>
-    public class AccountUserResponse
+    public class AccountResponse
     {
         /// <summary>
         ///   Id of account
         /// </summary>
-        public Guid AccountId { get; set; }
+        public Guid Id { get; set; }
         /// <summary>
         ///   Description of account
         /// </summary>
-        public string AccountDescription { get; set; }
+        public string Description { get; set; }
         /// <summary>
-        ///   Id of user
+        ///   Minimum allowed credit balance
         /// </summary>
-        public Guid UserId { get; set; }
+        public decimal MinimumCredits { get; set; }
         /// <summary>
-        ///   Description of user
+        ///   Current credit balance
         /// </summary>
-        public string UserDescription { get; set; }
+        public decimal Credits { get; set; }
+        /// <summary>
+        ///   Last credit change in UTC
+        /// </summary>
+        public DateTime LastChangeUtc { get; set; }
     }
 }

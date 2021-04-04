@@ -9,6 +9,7 @@ namespace FxCreditSystem.API
         {
             CreateMap<Common.Entities.UserIdentity, UserIdentityResponse>();
             CreateMap<Common.Entities.AccountUser, AccountUserResponse>();
+            CreateMap<Common.Entities.Account, AccountResponse>();
         }
     }
 }

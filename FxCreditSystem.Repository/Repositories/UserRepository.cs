@@ -15,6 +15,12 @@ namespace FxCreditSystem.Repository
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
 
+        public UserRepository(DataContext dataContext, IMapper mapper)
+        {
+            this.dataContext = dataContext;
+            this.mapper = mapper;
+        }
+
         public async Task<bool> HasIdentity(Guid userId, string identity)
         {
             // We need to know difference between identity not found ("false") & user not found (UserNotFoundException)
@@ -52,12 +58,6 @@ namespace FxCreditSystem.Repository
                 ?? throw new UserNotFoundException(userId);
 
             return mapper.Map<List<Common.Entities.AccountUser>>(result.AccountUsers);
-        }
-
-        public UserRepository(DataContext dataContext, IMapper mapper)
-        {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
         }
     }
 }

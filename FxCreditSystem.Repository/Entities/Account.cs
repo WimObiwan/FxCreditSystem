@@ -11,7 +11,6 @@ namespace FxCreditSystem.Repository.Entities
         public Guid ExternalId { get; set; }
         public string Description { get; set; }
         public decimal MinimumCredits { get; set; }
-
         public decimal Credits { get; set; }
         public DateTime LastChangeUtc { get; set; }
 
