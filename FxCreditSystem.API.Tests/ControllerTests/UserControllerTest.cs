@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using DeepEqual.Syntax;
 using FxCreditSystem.API.Controllers;
 using FxCreditSystem.API.DTO;
 using FxCreditSystem.Common;
@@ -42,8 +43,7 @@ namespace FxCreditSystem.API.Tests
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var userIdentityResponses = Assert.IsType<List<UserIdentityResponse>>(okObjectResult.Value);
             var userIdentityResponse = userIdentityResponses[0];
-            Assert.Equal(userIdentity.UserId, userIdentityResponse.UserId);
-            Assert.Equal(userIdentity.Identity, userIdentityResponse.Identity);
+            userIdentityResponse.ShouldDeepEqual(userIdentity);
 
             mockUserQueryHandler.Verify(uqh => uqh.GetIdentities(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
             mockUserQueryHandler.VerifyNoOtherCalls();
@@ -76,10 +76,7 @@ namespace FxCreditSystem.API.Tests
             var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var accountUserResponses = Assert.IsType<List<AccountUserResponse>>(okObjectResult.Value);
             var accountUserResponse = Assert.Single(accountUserResponses);
-            Assert.Equal(accountUser.AccountId, accountUserResponse.AccountId);
-            Assert.Equal(accountUser.AccountDescription, accountUserResponse.AccountDescription);
-            Assert.Equal(accountUser.UserId, accountUserResponse.UserId);
-            Assert.Equal(accountUser.UserDescription, accountUserResponse.UserDescription);
+            accountUserResponse.ShouldDeepEqual(accountUser);
 
             mockUserQueryHandler.Verify(uqh => uqh.GetAccounts(It.Is<string>(s => s.Equals(identity)), It.Is<Guid>(s => s.Equals(userId))));
             mockUserQueryHandler.VerifyNoOtherCalls();
