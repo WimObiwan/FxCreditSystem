@@ -6,8 +6,16 @@ namespace FxCreditSystem.Core
 {
     public interface IAuthorizationService
     {
-        Task<bool> CheckAuthorizedUser(string identity, Guid userId);
-        Task<bool> CheckAuthorizedAccount(string identity, Guid accountId);
+        Task<bool> CheckAuthorizedUser(string identity, Guid userId, AccessType accessType);
+        Task<bool> CheckAuthorizedAccount(string identity, Guid accountId, AccessType accessType);
+    }
+
+    [Flags]
+    public enum AccessType
+    {
+        Read = 1,
+        Write = 2,
+        Any = int.MaxValue,
     }
 
     public class AuthorizationService : IAuthorizationService
@@ -21,7 +29,7 @@ namespace FxCreditSystem.Core
             _accountRepository = accountRepository;
         }
 
-        public async Task<bool> CheckAuthorizedUser(string identity, Guid userId)
+        public async Task<bool> CheckAuthorizedUser(string identity, Guid userId, AccessType accessType)
         {
             if (await _userRepository.HasIdentity(userId, identity))
                 return true;
@@ -31,7 +39,7 @@ namespace FxCreditSystem.Core
             return false;
         }
 
-        public async Task<bool> CheckAuthorizedAccount(string identity, Guid accountId)
+        public async Task<bool> CheckAuthorizedAccount(string identity, Guid accountId, AccessType accessType)
         {
             if (await _accountRepository.HasIdentity(accountId, identity))
                 return true;

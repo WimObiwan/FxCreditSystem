@@ -13,7 +13,7 @@ namespace FxCreditSystem.Core
 
         public async Task<IList<UserIdentity>> GetIdentities(string identity, Guid userId)
         {
-            if (!await _authorizationService.CheckAuthorizedUser(identity, userId))
+            if (!await _authorizationService.CheckAuthorizedUser(identity, userId, AccessType.Read))
                 throw new UnauthorizedAccessException();
             
             return await _userRepository.GetIdentities(userId);
@@ -21,7 +21,7 @@ namespace FxCreditSystem.Core
 
         public async Task<IList<Common.Entities.AccountUser>> GetAccounts(string identity, Guid userId)
         {
-            if (!await _authorizationService.CheckAuthorizedUser(identity, userId))
+            if (!await _authorizationService.CheckAuthorizedUser(identity, userId, AccessType.Read))
                 throw new UnauthorizedAccessException();
             
             return await _userRepository.GetAccounts(userId);

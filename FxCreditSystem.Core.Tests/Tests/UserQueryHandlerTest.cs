@@ -26,7 +26,7 @@ namespace FxCreditSystem.Core.Tests
             var originalAccountUserList = newAccountUserFaker.Generate(3);
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(false);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read)).ReturnsAsync(false);
 
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(ur => ur.GetAccounts(master.UserId)).ReturnsAsync(originalAccountUserList);
@@ -51,7 +51,7 @@ namespace FxCreditSystem.Core.Tests
             var originalUserIdentityList = newUserIdentityFaker.Generate(3);
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(true);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read)).ReturnsAsync(true);
 
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(ur => ur.GetIdentities(master.UserId)).ReturnsAsync(originalUserIdentityList);
@@ -61,7 +61,7 @@ namespace FxCreditSystem.Core.Tests
 
             originalUserIdentityList.ShouldDeepEqual(userIdentitiesList);
 
-            mockAuthorizationService.Verify(a => a.CheckAuthorizedUser(identity, master.UserId));
+            mockAuthorizationService.Verify(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read));
             mockAuthorizationService.VerifyNoOtherCalls();
 
             mockUserRepository.Verify(ur => ur.GetIdentities(master.UserId));
@@ -83,7 +83,7 @@ namespace FxCreditSystem.Core.Tests
             var originalAccountUserList = newAccountUserFaker.Generate(3);
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(false);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read)).ReturnsAsync(false);
 
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(ur => ur.GetAccounts(master.UserId)).ReturnsAsync(originalAccountUserList);
@@ -109,7 +109,7 @@ namespace FxCreditSystem.Core.Tests
             var originalAccountUserList = newAccountUserFaker.Generate(3);
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId)).ReturnsAsync(true);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read)).ReturnsAsync(true);
 
             var mockUserRepository = new Mock<IUserRepository>();
             mockUserRepository.Setup(ur => ur.GetAccounts(master.UserId)).ReturnsAsync(originalAccountUserList);
@@ -119,7 +119,7 @@ namespace FxCreditSystem.Core.Tests
 
             originalAccountUserList.ShouldDeepEqual(accountUserList);
 
-            mockAuthorizationService.Verify(a => a.CheckAuthorizedUser(identity, master.UserId));
+            mockAuthorizationService.Verify(a => a.CheckAuthorizedUser(identity, master.UserId, AccessType.Read));
             mockAuthorizationService.VerifyNoOtherCalls();
 
             mockUserRepository.Verify(ur => ur.GetAccounts(master.UserId));

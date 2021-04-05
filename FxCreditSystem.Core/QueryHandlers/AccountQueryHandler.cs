@@ -13,7 +13,7 @@ namespace FxCreditSystem.Core
 
         public async Task<Account> GetAccount(string identity, Guid accountId)
         {
-            if (!await _authorizationService.CheckAuthorizedAccount(identity, accountId))
+            if (!await _authorizationService.CheckAuthorizedAccount(identity, accountId, AccessType.Read))
                 throw new UnauthorizedAccessException();
             
             return await _accountRepository.GetAccount(accountId);

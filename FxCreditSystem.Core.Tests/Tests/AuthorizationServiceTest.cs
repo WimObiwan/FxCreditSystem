@@ -20,7 +20,7 @@ namespace FxCreditSystem.Core.Tests
             mockUserIdentityRepository.Setup(u => u.HasIdentity(master.UserId, identity)).ReturnsAsync(hasIdentity);
 
             var authorizationService = new AuthorizationService(mockUserIdentityRepository.Object, null);
-            var result = await authorizationService.CheckAuthorizedUser(identity, master.UserId);
+            var result = await authorizationService.CheckAuthorizedUser(identity, master.UserId, AccessType.Read);
 
             Assert.Equal(hasIdentity, result);
             
@@ -52,7 +52,7 @@ namespace FxCreditSystem.Core.Tests
             mockAccountRepository.Setup(u => u.HasIdentity(master.AccountId, identity)).ReturnsAsync(hasIdentity);
 
             var authorizationService = new AuthorizationService(null, mockAccountRepository.Object);
-            var result = await authorizationService.CheckAuthorizedAccount(identity, master.AccountId);
+            var result = await authorizationService.CheckAuthorizedAccount(identity, master.AccountId, AccessType.Read);
 
             Assert.Equal(hasIdentity, result);
             

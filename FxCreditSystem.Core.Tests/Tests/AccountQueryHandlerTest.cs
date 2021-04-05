@@ -21,13 +21,16 @@ namespace FxCreditSystem.Core.Tests
             var originalAccount = accountUserFaker.Generate();
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, originalAccount.Id)).ReturnsAsync(false);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedUser(identity, originalAccount.Id, AccessType.Read)).ReturnsAsync(false);
 
             var mockAccountRepository = new Mock<IAccountRepository>();
             mockAccountRepository.Setup(ar => ar.GetAccount(originalAccount.Id)).ReturnsAsync(originalAccount);
 
             var accountQueryHandler = new AccountQueryHandler(mockAuthorizationService.Object, mockAccountRepository.Object);
             await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await accountQueryHandler.GetAccount(identity, originalAccount.Id));
+
+            mockAuthorizationService.Verify(a => a.CheckAuthorizedAccount(identity, originalAccount.Id, AccessType.Read));
+            mockAuthorizationService.VerifyNoOtherCalls();
 
             mockAccountRepository.VerifyNoOtherCalls();
         }
@@ -42,7 +45,7 @@ namespace FxCreditSystem.Core.Tests
             var originalAccount = accountUserFaker.Generate();
 
             var mockAuthorizationService = new Mock<IAuthorizationService>();
-            mockAuthorizationService.Setup(a => a.CheckAuthorizedAccount(identity, originalAccount.Id)).ReturnsAsync(true);
+            mockAuthorizationService.Setup(a => a.CheckAuthorizedAccount(identity, originalAccount.Id, AccessType.Read)).ReturnsAsync(true);
 
             var mockAccountRepository = new Mock<IAccountRepository>();
             mockAccountRepository.Setup(ar => ar.GetAccount(originalAccount.Id)).ReturnsAsync(originalAccount);
@@ -52,7 +55,7 @@ namespace FxCreditSystem.Core.Tests
 
             originalAccount.ShouldDeepEqual(account);
 
-            mockAuthorizationService.Verify(a => a.CheckAuthorizedAccount(identity, originalAccount.Id));
+            mockAuthorizationService.Verify(a => a.CheckAuthorizedAccount(identity, originalAccount.Id, AccessType.Read));
             mockAuthorizationService.VerifyNoOtherCalls();
 
             mockAccountRepository.Verify(ar => ar.GetAccount(originalAccount.Id));
