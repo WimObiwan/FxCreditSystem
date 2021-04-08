@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -164,6 +165,15 @@ namespace FxCreditSystem.API
             {
                 options.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
             });
+
+            // Rate limit
+            services.AddOptions();
+            services.AddMemoryCache();
+            services.Configure<IpRateLimitOptions>(_configuration.GetSection("IpRateLimiting"));
+            services.Configure<IpRateLimitPolicies>(_configuration.GetSection("IpRateLimitPolicies"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -171,6 +181,7 @@ namespace FxCreditSystem.API
         {
             // Detailed Exception info in Development environment is handled by ErrorHandlerMiddleware
 
+            app.UseIpRateLimiting();
             app.UseSwagger(c =>
                 c.RouteTemplate = "openapi/{documentName}/openapi.json"
             );
