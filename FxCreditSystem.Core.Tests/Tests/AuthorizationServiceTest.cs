@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Entities;
 using FxCreditSystem.Common.Fakers;
 using Moq;
 using Xunit;
