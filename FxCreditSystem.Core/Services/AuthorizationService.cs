@@ -10,14 +10,6 @@ namespace FxCreditSystem.Core
         Task<bool> CheckAuthorizedAccount(string identity, Guid accountId, AccessType accessType);
     }
 
-    [Flags]
-    public enum AccessType
-    {
-        Read = 1,
-        Write = 2,
-        Any = int.MaxValue,
-    }
-
     public class AuthorizationService : IAuthorizationService
     {
         IUserRepository _userRepository;
