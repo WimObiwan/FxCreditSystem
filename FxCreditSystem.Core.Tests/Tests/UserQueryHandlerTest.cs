@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using DeepEqual.Syntax;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Entities;
 using FxCreditSystem.Common.Fakers;
 using Moq;
 using Xunit;
