@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Entities;
 
 namespace FxCreditSystem.Core
 {
