@@ -25,7 +25,8 @@ namespace FxCreditSystem.Core.Tests
 
             Assert.Equal(hasIdentity, result);
             
-            mockUserIdentityRepository.Verify(u => u.HasIdentity(master.UserId, identity));
+            mockUserIdentityRepository.Verify(ur => ur.CheckIdentityScope(identity, master.UserId));
+
             mockUserIdentityRepository.VerifyNoOtherCalls();
         }
 
@@ -57,7 +58,7 @@ namespace FxCreditSystem.Core.Tests
 
             Assert.Equal(hasIdentity, result);
             
-            mockAccountRepository.Verify(a => a.HasIdentity(master.AccountId, identity));
+            mockAccountRepository.Verify(ar => ar.CheckIdentity(master.AccountId, identity));
             mockAccountRepository.VerifyNoOtherCalls();
         }
 
