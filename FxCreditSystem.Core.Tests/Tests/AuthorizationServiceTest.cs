@@ -17,7 +17,7 @@ namespace FxCreditSystem.Core.Tests
             var master = accountUserFaker.Generate();
 
             var mockUserIdentityRepository = new Mock<IUserRepository>();
-            mockUserIdentityRepository.Setup(u => u.HasIdentity(master.UserId, identity)).ReturnsAsync(hasIdentity);
+            mockUserIdentityRepository.Setup(u => u.CheckIdentityScope(identity, master.UserId)).ReturnsAsync(hasIdentity);
 
             var authorizationService = new AuthorizationService(mockUserIdentityRepository.Object, null);
             var result = await authorizationService.CheckAuthorizedUser(identity, master.UserId, AccessType.Read);
