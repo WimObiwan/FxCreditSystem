@@ -31,7 +31,7 @@ namespace FxCreditSystem.Core
 
         public async Task<bool> CheckAuthorizedUser(string identity, Guid userId, AccessType accessType)
         {
-            if (await _userRepository.HasIdentity(userId, identity))
+            if (await _userRepository.CheckIdentityScope(identity, userId))
                 return true;
 
             // TODO: Implement "admin" access
@@ -41,7 +41,7 @@ namespace FxCreditSystem.Core
 
         public async Task<bool> CheckAuthorizedAccount(string identity, Guid accountId, AccessType accessType)
         {
-            if (await _accountRepository.HasIdentity(accountId, identity))
+            if (await _accountRepository.CheckIdentity(accountId, identity))
                 return true;
 
             // TODO: Implement "admin" access

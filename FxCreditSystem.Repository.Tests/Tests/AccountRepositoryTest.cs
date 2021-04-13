@@ -26,20 +26,20 @@ namespace FxCreditSystem.Repository.Tests
         [Fact]
         public async Task HasIdentity_ShouldSucceed()
         {
-            var result = await accountRepository.HasIdentity(AccountId, UserIdentity);
+            var result = await accountRepository.CheckIdentity(AccountId, UserIdentity);
             Assert.True(result);
 
-            result = await accountRepository.HasIdentity(OtherAccountId, OtherUserIdentity);
+            result = await accountRepository.CheckIdentity(OtherAccountId, OtherUserIdentity);
             Assert.True(result);
         }
 
         [Fact]
         public async Task HasIdentity_WithoutIdentity_ShouldSucceed()
         {
-            var result = await accountRepository.HasIdentity(AccountId, OtherUserIdentity);
+            var result = await accountRepository.CheckIdentity(AccountId, OtherUserIdentity);
             Assert.False(result);
 
-            result = await accountRepository.HasIdentity(OtherAccountId, UserIdentity);
+            result = await accountRepository.CheckIdentity(OtherAccountId, UserIdentity);
             Assert.False(result);
         }
 
@@ -51,7 +51,7 @@ namespace FxCreditSystem.Repository.Tests
             var accountId = faker.Random.Guid();
 
             await Assert.ThrowsAsync<AccountNotFoundException>(async () =>
-                await accountRepository.HasIdentity(accountId, identity));
+                await accountRepository.CheckIdentity(accountId, identity));
         }
 
         [Fact]

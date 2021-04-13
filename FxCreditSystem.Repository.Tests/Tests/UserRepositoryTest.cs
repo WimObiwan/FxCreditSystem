@@ -24,34 +24,34 @@ namespace FxCreditSystem.Repository.Tests
         }
 
         [Fact]
-        public async Task HasIdentity_ShouldSucceed()
+        public async Task CheckIdentity_ShouldSucceed()
         {
-            var result = await userRepository.HasIdentity(UserId, UserIdentity);
+            var result = await userRepository.CheckIdentityScope(UserIdentity, UserId);
             Assert.True(result);
 
-            result = await userRepository.HasIdentity(OtherUserId, OtherUserIdentity);
+            result = await userRepository.CheckIdentityScope(OtherUserIdentity, OtherUserId);
             Assert.True(result);
         }
 
         [Fact]
-        public async Task HasIdentity_WithoutIdentity_ShouldSucceed()
+        public async Task CheckIdentity_WithoutIdentity_ShouldSucceed()
         {
-            var result = await userRepository.HasIdentity(UserId, OtherUserIdentity);
+            var result = await userRepository.CheckIdentityScope(OtherUserIdentity, UserId);
             Assert.False(result);
 
-            result = await userRepository.HasIdentity(OtherUserId, UserIdentity);
+            result = await userRepository.CheckIdentityScope(UserIdentity, OtherUserId);
             Assert.False(result);
         }
 
         [Fact]
-        public async Task HasIdentity_WithUnknownUser_ShouldFail()
+        public async Task CheckIdentity_WithUnknownUser_ShouldFail()
         {
             Bogus.Faker faker = new Bogus.Faker();
             var identity = faker.Random.Identity();
             var userId = faker.Random.Guid();
 
             await Assert.ThrowsAsync<UserNotFoundException>(async () =>
-                await userRepository.HasIdentity(userId, identity));
+                await userRepository.CheckIdentityScope(identity, userId));
         }
 
         [Fact]

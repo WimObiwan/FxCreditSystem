@@ -21,7 +21,7 @@ namespace FxCreditSystem.Repository
             this.mapper = mapper;
         }
 
-        public async Task<bool> HasIdentity(Guid userId, string identity)
+        public async Task<bool> CheckIdentityScope(string identity, Guid userId)
         {
             // We need to know difference between identity not found ("false") & user not found (UserNotFoundException)
             var result = await dataContext.Users

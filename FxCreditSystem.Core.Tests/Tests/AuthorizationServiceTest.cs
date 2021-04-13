@@ -49,7 +49,7 @@ namespace FxCreditSystem.Core.Tests
             var master = accountUserFaker.Generate();
 
             var mockAccountRepository = new Mock<IAccountRepository>();
-            mockAccountRepository.Setup(u => u.HasIdentity(master.AccountId, identity)).ReturnsAsync(hasIdentity);
+            mockAccountRepository.Setup(ar => ar.CheckIdentity(master.AccountId, identity)).ReturnsAsync(hasIdentity);
 
             var authorizationService = new AuthorizationService(null, mockAccountRepository.Object);
             var result = await authorizationService.CheckAuthorizedAccount(identity, master.AccountId, AccessType.Read);
