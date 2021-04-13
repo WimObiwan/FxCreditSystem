@@ -14,6 +14,7 @@ namespace FxCreditSystem.Repository.Entities
         public List<AccountUserLink> AccountUsers { get; set; }
         public ICollection<Account> Accounts { get; set; }       
         public List<UserIdentity> Identities { get; set; }
+        public List<UserScope> Scopes { get; set; }
 
         public override string ToString()
         {

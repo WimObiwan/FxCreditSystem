@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace FxCreditSystem.Repository.Tests.Shared
@@ -10,6 +11,7 @@ namespace FxCreditSystem.Repository.Tests.Shared
 
         public Entities.User User { get; private set; }
         public Entities.User OtherUser { get; private set; }
+        public Entities.User AdminUser { get; private set; }
         public Entities.Account Account { get; private set; }
         public Entities.Account OtherAccount { get; private set; }
 
@@ -19,13 +21,18 @@ namespace FxCreditSystem.Repository.Tests.Shared
             dbContext.Database.EnsureCreated();
 
             var userFaker = new Fakers.UserFaker(); 
-            var user = userFaker.Generate();
-            var otherUser = userFaker.Generate();
-            User = user;
-            OtherUser = otherUser;
+            User = userFaker.Generate();
+            OtherUser = userFaker.Generate();
+            AdminUser = userFaker.Generate();
+            AdminUser.Scopes = new List<Entities.UserScope> { 
+                new Entities.UserScope() {
+                    Scope = "admin:read" 
+                } 
+            };
             dbContext.Users.AddRange(
-                user,
-                otherUser
+                User,
+                OtherUser,
+                AdminUser
             );
 
             Fakers.AccountFaker accountFaker = new Fakers.AccountFaker();
@@ -41,12 +48,12 @@ namespace FxCreditSystem.Repository.Tests.Shared
                 new Entities.AccountUserLink
                 {
                     Account = Account,
-                    User = user,
+                    User = User,
                 },
                 new Entities.AccountUserLink
                 {
                     Account = OtherAccount,
-                    User = otherUser,
+                    User = OtherUser,
                 }
             );
 

@@ -27,7 +27,8 @@ namespace FxCreditSystem.Core
             if (await _userRepository.CheckIdentityScope(identity, userId))
                 return true;
 
-            // TODO: Implement "admin" access
+            if (await _userRepository.CheckAdminScope(identity, accessType))
+                return true;
 
             return false;
         }
@@ -37,7 +38,8 @@ namespace FxCreditSystem.Core
             if (await _accountRepository.CheckIdentity(accountId, identity))
                 return true;
 
-            // TODO: Implement "admin" access
+            if (await _userRepository.CheckAdminScope(identity, accessType))
+                return true;
 
             return false;
         }

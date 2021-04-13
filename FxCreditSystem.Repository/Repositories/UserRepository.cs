@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
 using FxCreditSystem.Common;
+using FxCreditSystem.Common.Entities;
 using FxCreditSystem.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,28 @@ namespace FxCreditSystem.Repository
             return result ?? throw new UserNotFoundException(userId);
         }
 
+        public async Task<bool> CheckAdminScope(string identity, AccessType accessType)
+        {
+            string[] scopes;
+            switch (accessType)
+            {
+                case AccessType.Read:
+                    scopes = new[] { "admin:read" };
+                    break;
+                case AccessType.Write:
+                    scopes = new[] { "admin:write" };
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            var result = await dataContext.Users
+                .Where(u => u.Identities.Any(ui => ui.Identity == identity))
+                .Select(u => (bool?)u.Scopes.Any(s => scopes.Contains(s.Scope)))
+                .FirstOrDefaultAsync<bool?>();
+            return result ?? throw new IdentityNotFoundException(identity);
+        }
+
         internal async Task<bool> HasAccount(Guid userId, long accountId)
         {
             return await dataContext.AccountUsers.AnyAsync(au => au.User.ExternalId == userId && au.AccountId == accountId);
@@ -38,7 +61,6 @@ namespace FxCreditSystem.Repository
 
         public async Task<IList<Common.Entities.UserIdentity>> GetIdentities(Guid userId)
         {
-            // We need to know difference between identity not found (empty list) & user not found (UserNotFoundException)
             var result = await dataContext.Users
                 .Where(u => u.ExternalId == userId)
                 .Include(u => u.Identities)
@@ -50,7 +72,6 @@ namespace FxCreditSystem.Repository
 
         public async Task<IList<Common.Entities.AccountUser>> GetAccounts(Guid userId)
         {
-            // We need to know difference between identity not found (empty list) & user not found (UserNotFoundException)
             var result = await dataContext.Users
                 .Where(u => u.ExternalId == userId)
                 .Include(u => u.Accounts)

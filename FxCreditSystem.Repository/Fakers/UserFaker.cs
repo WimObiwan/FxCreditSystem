@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Bogus;
 
 namespace FxCreditSystem.Repository.Fakers
@@ -14,6 +15,7 @@ namespace FxCreditSystem.Repository.Fakers
             Ignore(u => u.AccountUsers);
             Ignore(u => u.Accounts);
             RuleFor(u => u.Identities, f => userIdentityFaker.Generate(3));
+            RuleFor(u => u.Scopes, f => new List<Repository.Entities.UserScope>());
         }
     }
 }
