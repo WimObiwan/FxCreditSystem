@@ -31,6 +31,14 @@ namespace FxCreditSystem.Repository
                 .Property(e => e.Description)
                 .HasMaxLength(256)
                 .IsUnicode();
+            modelBuilder
+                .Entity<Account>()
+                .Property(e => e.Credits)
+                .HasPrecision(20,10);
+            modelBuilder
+                .Entity<Account>()
+                .Property(e => e.MinimumCredits)
+                .HasPrecision(20,10);
 
             // Transaction
             modelBuilder
@@ -57,6 +65,14 @@ namespace FxCreditSystem.Repository
                 .Property(e => e.Description)
                 .HasMaxLength(256)
                 .IsUnicode();
+            modelBuilder
+                .Entity<Transaction>()
+                .Property(e => e.CreditsChange)
+                .HasPrecision(20,10);
+            modelBuilder
+                .Entity<Transaction>()
+                .Property(e => e.CreditsNew)
+                .HasPrecision(20,10);
 
             // User
             modelBuilder

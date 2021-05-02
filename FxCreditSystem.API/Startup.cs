@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreRateLimit;
@@ -146,11 +147,30 @@ namespace FxCreditSystem.API
 
             services.AddAuthorization();
 
-            services.AddHealthChecks()
-                .AddSqlite(
-                    sqliteConnectionString: _configuration.GetConnectionString("DefaultConnection"), 
-                    name: "sqlite-Default")
+            var healthCheckBuilder = services.AddHealthChecks()
                 .AddCheck<SystemInfoHealthCheck>("systeminfo");
+            string databaseType = _configuration.GetValue<string>("DatabaseType", null);
+            if (databaseType == "Sqlite")
+            {
+                healthCheckBuilder
+                    .AddSqlite(
+                        sqliteConnectionString: _configuration.GetConnectionString("DefaultConnection"), 
+                        name: "sqlite-Default");
+            }
+            else if (databaseType == "SqlServer")
+            {
+                string connectionString = _configuration.GetConnectionString("DefaultConnection");
+                var builder = new SqlConnectionStringBuilder(connectionString);
+                builder.Password = File.ReadAllText(_configuration.GetValue<string>("DB_PASSWORD_SECRET_FILE"));
+                healthCheckBuilder
+                    .AddSqlServer(
+                        connectionString: builder.ConnectionString, 
+                        name: "sqlserver-Default");
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unknown DatabaseType in configuration ({databaseType})");
+            }
             services.AddSingleton<IHealthCheckWriter, ZabbixFriendlyHealthCheckWriter>();
 
             services.AddAutoMapper(
@@ -163,7 +183,21 @@ namespace FxCreditSystem.API
 
             services.AddDbContext<Repository.DataContext>(options =>
             {
-                options.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
+                if (databaseType == "Sqlite")
+                {
+                    options.UseSqlite(_configuration.GetConnectionString("DefaultConnection"));
+                }
+                else if (databaseType == "SqlServer")
+                {
+                    string connectionString = _configuration.GetConnectionString("DefaultConnection");
+                    var builder = new SqlConnectionStringBuilder(connectionString);
+                    builder.Password = File.ReadAllText(_configuration.GetValue<string>("DB_PASSWORD_SECRET_FILE"));
+                    options.UseSqlServer(builder.ConnectionString);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unknown DatabaseType in configuration ({databaseType})");
+                }
             });
 
             // Rate limit
