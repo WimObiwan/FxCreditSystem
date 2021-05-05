@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Writers;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace FxCreditSystem.API
 {
@@ -40,6 +41,15 @@ namespace FxCreditSystem.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-5.0#forward-the-scheme-for-linux-and-non-iis-reverse-proxies
+            if (_configuration.GetValue<bool>("ForwardedHeadersEnabled", false))
+            {
+                services.Configure<ForwardedHeadersOptions>(options =>
+                    {
+                        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                    });
+            }
+
             services.AddControllers(c =>
             {
                 c.Filters.Add(new ConsumesAttribute("application/json"));
