@@ -4,4 +4,4 @@ obj/
 CoverageResults/
 TestResults/
 
-appsettings.Local.json
+appsettings.*.json

@@ -23,6 +23,7 @@ RUN ["dotnet", "test", "-c", "Release", "--no-restore", "--no-build"]
 
 RUN ["dotnet", "publish", "-c", "Release", "--no-restore", "--no-build", "-o", "./out/"]
 
+
 ##########
 # RUN
 ##########
