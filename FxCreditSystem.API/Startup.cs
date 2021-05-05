@@ -227,7 +227,7 @@ namespace FxCreditSystem.API
             {
                 c.SwaggerEndpoint("/openapi/v1/openapi.json", "FxCreditSystem.API v1");
                 c.OAuthClientId(_configuration["AWS:UserPoolClientId"]);
-                c.OAuth2RedirectUrl("https://localhost:5001/openapi/oauth2-redirect.html");
+                c.OAuth2RedirectUrl(_configuration["Swagger:AuthorizationRedirectURL"]);
                 c.RoutePrefix = "openapi";
             });
 
