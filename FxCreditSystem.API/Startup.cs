@@ -159,12 +159,9 @@ namespace FxCreditSystem.API
             }
             else if (databaseType == "SqlServer")
             {
-                string connectionString = _configuration.GetConnectionString("DefaultConnection");
-                var builder = new SqlConnectionStringBuilder(connectionString);
-                builder.Password = File.ReadAllText(_configuration.GetValue<string>("DB_PASSWORD_SECRET_FILE"));
                 healthCheckBuilder
                     .AddSqlServer(
-                        connectionString: builder.ConnectionString, 
+                        connectionString: _configuration.GetConnectionString("DefaultConnection"),
                         name: "sqlserver-Default");
             }
             else
@@ -189,10 +186,7 @@ namespace FxCreditSystem.API
                 }
                 else if (databaseType == "SqlServer")
                 {
-                    string connectionString = _configuration.GetConnectionString("DefaultConnection");
-                    var builder = new SqlConnectionStringBuilder(connectionString);
-                    builder.Password = File.ReadAllText(_configuration.GetValue<string>("DB_PASSWORD_SECRET_FILE"));
-                    options.UseSqlServer(builder.ConnectionString);
+                    options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
                 }
                 else
                 {

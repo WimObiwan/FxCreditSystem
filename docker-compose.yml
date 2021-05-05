@@ -16,8 +16,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - db
-    secrets:
-      - db_sqlserver_sa
   db:
     image: "mcr.microsoft.com/mssql/server"
     environment:

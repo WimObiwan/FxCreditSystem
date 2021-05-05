@@ -64,11 +64,21 @@ sudo docker build -t fxcreditsystem .
 sudo docker-compose up --force-recreate --build
 sudo docker service update --force test_api
 
-# next time, try this:
+# this works
 sudo docker-compose build
 sudo docker service update --force test_api
 
-``` 
+# configuration
+sudo docker config create fxcreditsystem_api_appsettings.json-v2 ./FxCreditSystem.API/appsettings.Production.json
+sudo docker service update \
+    --config-rm fxcreditsystem_api_appsettings.json-v1 \
+    --config-add source=fxcreditsystem_api_appsettings.json-v2,target=/app/appsettings.Production.json,mode=0440 \
+    test_api
+sudo docker config rm fxcreditsystem_api_appsettings.json-v1
+
+# http://127.0.0.1:7991/hc
+# http://127.0.0.1:7991/openapi
+```
 
 
 appsettings: server=db  #telnet db 1433
