@@ -6,28 +6,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "7991:80"
-    volumes:
-      - /tmp/temp-keys/:/root/.aspnet/DataProtection-Keys/
-      - /tmp/db/:/db/
     environment:
-      - DB_PASSWORD_SECRET_FILE=/run/secrets/db_sqlserver_sa
       - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - db
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   db:
     image: "mcr.microsoft.com/mssql/server"
     environment:
-      #SA_PASSWORD: "Your_password123"
-      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_sqlserver_sa
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
-    ports:
-      - "7992:1433"
-    secrets:
-      - db_sqlserver_sa
-
-secrets:
-  db_sqlserver_sa:
-    external: true
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure

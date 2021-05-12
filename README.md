@@ -49,7 +49,7 @@ sudo docker stack deploy --compose-file ./docker-compose.yml test
 sudo docker stack rm test
 
 pw=$(strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo)
-echo $pw | sudo docker secret create db_sqlserver_sa -
+echo $pw | sudo docker secret create fxcreditsystem_prod_sqlserver_sa -
 
 sudo docker service update test_api
 
@@ -78,6 +78,18 @@ sudo docker config rm fxcreditsystem_api_appsettings.json-v1
 
 # http://127.0.0.1:7991/hc
 # http://127.0.0.1:7991/openapi
+
+#volumes:
+sudo mkdir -p /tmp/fxcreditsystem_prod/db/mssql
+sudo mkdir -p /tmp/fxcreditsystem_prod/api/DataProtection-Keys
+sudo chown -R root /tmp/fxcreditsystem_prod #needed?
+sudo chmod 777 /tmp/fxcreditsystem_prod # todo: restrict 777!
+
+sudo docker stack deploy --compose-file ./docker-compose.yml --compose-file ./docker-compose.prod.yml fxcreditsystem_prod
+sudo docker service update --config-add source=fxcreditsystem_api_appsettings.json-v2,target=/app/appsettings.Production.json,mode=0440 fxcreditsystem_prod_api
+sudo docker stack rm fxcreditsystem_prod
+# sqlserver: if login fails, check volume (permissions, delete data helped...)
+# api: if failed possibly sqlserver issue above
 ```
 
 

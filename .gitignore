@@ -5,3 +5,4 @@ CoverageResults/
 TestResults/
 
 appsettings.*.json
+docker-compose.*.yml
